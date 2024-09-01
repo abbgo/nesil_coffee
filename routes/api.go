@@ -1,6 +1,8 @@
 package routes
 
 import (
+	backApi "nesil_coffe/routes/back"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
@@ -17,6 +19,12 @@ func Routes() *gin.Engine {
 		AllowCredentials: true,
 		AllowAllOrigins:  true,
 	}))
+
+	back := routes.Group("/api/back")
+	{
+		// bu route - ler back kategoriyalar ucin doredilen rout - laryn toplumy
+		backApi.CategoryBackRoutes(back)
+	}
 
 	return routes
 }
