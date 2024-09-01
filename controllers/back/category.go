@@ -125,3 +125,28 @@ func GetCategoryByID(c *gin.Context) {
 		"category": category,
 	})
 }
+
+func GetCategories(c *gin.Context) {
+	var requestQuery helpers.StandartQuery
+	var count uint
+	var categories []models.Category
+
+	// initialize database connection
+	db, err := config.ConnDB()
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer db.Close()
+
+	// request query - den maglumatlar bind edilyar
+	if err := c.Bind(&requestQuery); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	// request query - den maglumatlar validate edilyar
+	if err := helpers.ValidateStructData(&requestQuery); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+}
