@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func FileUpload(fileName, path, fileType string, context *gin.Context /* resizedSize int */) (string, error) {
+func FileUpload(fileName, path string, context *gin.Context /* resizedSize int */) (string, error) {
 	file, err := context.FormFile(fileName)
 	if err != nil {
 		return "", err
@@ -17,14 +17,10 @@ func FileUpload(fileName, path, fileType string, context *gin.Context /* resized
 
 	extensionFile := filepath.Ext(file.Filename)
 
-	var newFileName string
-
-	if fileType == "image" {
-		if extensionFile != ".jpg" && extensionFile != ".JPG" {
-			return "", errors.New("the image must be .jpg format")
-		}
-		newFileName = uuid.New().String() + extensionFile
+	if extensionFile != ".jpg" && extensionFile != ".JPG" {
+		return "", errors.New("the image must be .jpg format")
 	}
+	newFileName := uuid.New().String() + extensionFile
 
 	_, err = os.Stat(ServerPath + "uploads/" + path)
 	if err != nil {

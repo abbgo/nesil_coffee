@@ -54,7 +54,7 @@ func AddOrUpdateImage(c *gin.Context) {
 		return
 	}
 
-	image, err := helpers.FileUpload(file_name, path, "image", c)
+	image, err := helpers.FileUpload(file_name, path, c)
 	if err != nil {
 		helpers.HandleError(c, 400, err.Error())
 		return
