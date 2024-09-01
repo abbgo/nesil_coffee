@@ -108,7 +108,7 @@ func GetCategoryByID(c *gin.Context) {
 	// database - den request parametr - den gelen id boyunca maglumat cekilyar
 	var category models.Category
 	if err := db.QueryRow(context.Background(),
-		"SELECT id,name,image,description FROM categories WHERE id = $1 AND deleted_at IS NULL", categoryID).
+		"SELECT id,name,image,description FROM categories WHERE id = $1", categoryID).
 		Scan(&category.ID, &category.Name, &category.Image, &category.Description); err != nil {
 		helpers.HandleError(c, 400, err.Error())
 		return
