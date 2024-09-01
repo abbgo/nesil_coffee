@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func FileUpload(fileName, path string, context *gin.Context /* resizedSize int */) (string, error) {
+func FileUpload(fileName, path string, context *gin.Context) (string, error) {
 	file, err := context.FormFile(fileName)
 	if err != nil {
 		return "", err
