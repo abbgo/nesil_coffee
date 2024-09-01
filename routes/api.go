@@ -24,6 +24,9 @@ func Routes() *gin.Engine {
 	{
 		// bu route - ler back kategoriyalar ucin doredilen rout - laryn toplumy
 		backApi.CategoryBackRoutes(back)
+
+		// bu route - ler back suratlar doredilen rout - laryn toplumy
+		backApi.BackImageRoutes(back)
 	}
 
 	return routes
