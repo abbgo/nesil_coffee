@@ -1,7 +1,20 @@
 package main
 
-import "fmt"
+import (
+	"log"
+	"nesil_coffe/config"
+
+	"github.com/joho/godotenv"
+)
 
 func main() {
-	fmt.Println("Fisrt commit for nesil coffee")
+	if err := godotenv.Load(); err != nil {
+		log.Fatal(err)
+	}
+	// Database instance
+	db, err := config.ConnDB()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
 }
