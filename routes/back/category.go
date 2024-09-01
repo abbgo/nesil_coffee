@@ -12,8 +12,8 @@ func CategoryBackRoutes(back *gin.RouterGroup) {
 		// CreateCategory -> Category gosmak ulanylar
 		backCategoryApi.POST("", controllers.CreateCategory)
 
-		// // UpdateCategoryByID -> id boyunca Category - in maglumatlaryny update etmek ucin ulanylyar
-		// backCategoryApi.PUT("", controllers.UpdateCategoryByID)
+		// UpdateCategoryByID -> id boyunca Category - in maglumatlaryny update etmek ucin ulanylyar
+		backCategoryApi.PUT("", controllers.UpdateCategoryByID)
 
 		// // GetBrendByID -> id - si boyunca Brend - in maglumatlaryny almak ucin ulanylyar
 		// backCategoryApi.GET(":id", controllers.GetCategoryByID)
