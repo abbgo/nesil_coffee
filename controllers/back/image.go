@@ -30,7 +30,7 @@ func AddOrUpdateImage(c *gin.Context) {
 			return
 		}
 
-		if err := os.Remove(helpers.ServerPath + "assets/" + oldImage); err != nil {
+		if err := os.Remove(helpers.ServerPath + "uploads/" + oldImage); err != nil {
 			helpers.HandleError(c, 400, err.Error())
 			return
 		}
@@ -46,23 +46,9 @@ func AddOrUpdateImage(c *gin.Context) {
 	case "product":
 		path = "product"
 		file_name = "image"
-		// resizedSize = 200
-	case "setting":
-		path = "setting"
-		file_name = "image"
-		// resizedSize = 0
 	case "category":
 		path = "category"
 		file_name = "image"
-		// resizedSize = 200
-	case "brend":
-		path = "brend"
-		file_name = "image"
-		// resizedSize = 200
-	case "shop":
-		path = "shop"
-		file_name = "image"
-		// resizedSize = 230
 	default:
 		helpers.HandleError(c, 400, "invalid image")
 		return
