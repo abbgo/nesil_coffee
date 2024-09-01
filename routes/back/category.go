@@ -22,13 +22,7 @@ func CategoryBackRoutes(back *gin.RouterGroup) {
 		// limit we page boyunca pagination ulanyp almak ucin ulanylyar
 		backCategoryApi.GET("", controllers.GetCategories)
 
-		// // DeleteCategoryByID -> id boyunca category - ni korzina salmak ucin ulanylyar
-		// backCategoryApi.DELETE(":id", controllers.DeleteCategoryByID)
-
-		// // RestoreCategoryByID -> id boyunca category - ni korzinadan cykarmak ucin ulanylyar
-		// backCategoryApi.GET(":id/restore", controllers.RestoreCategoryByID)
-
-		// // DeletePermanentlyCategoryByID -> id boyunca category - i doly (korzinadan) pozmak ucin ulanylyar
-		// backCategoryApi.DELETE(":id/delete", controllers.DeletePermanentlyCategoryByID)
+		// DeleteCategoryByID -> id boyunca category pozmak ucin ulanylyar
+		backCategoryApi.DELETE(":id", controllers.DeleteCategoryByID)
 	}
 }

@@ -8,6 +8,7 @@ import (
 	"nesil_coffe/models"
 	"nesil_coffe/serializations"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -203,5 +204,47 @@ func GetCategories(c *gin.Context) {
 		"status":     true,
 		"categories": categories,
 		"count":      count,
+	})
+}
+
+func DeleteCategoryByID(c *gin.Context) {
+	// initialize database connection
+	db, err := config.ConnDB()
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer db.Close()
+
+	// request parametr - den id alynyar
+	ID := c.Param("id")
+
+	// database - de gelen id degisli maglumat barmy sol barlanyar
+	var id string
+	var image string
+	db.QueryRow(context.Background(), "SELECT id,image FROM categories WHERE id = $1", ID).Scan(&id, &image)
+
+	// eger database - de gelen id degisli category yok bolsa error return edilyar
+	if id == "" {
+		helpers.HandleError(c, 404, "record not found")
+		return
+	}
+
+	// local path - dan surat pozulyar
+	if err := os.Remove(helpers.ServerPath + image); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	// category - nyn suraty pozulandan son category we onun bilen baglanysykly maglumatlar pozulyar
+	_, err = db.Exec(context.Background(), "DELETE FROM categories WHERE id = $1", ID)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  true,
+		"message": "data successfully deleted",
 	})
 }
