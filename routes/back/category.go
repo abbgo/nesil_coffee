@@ -16,7 +16,7 @@ func CategoryBackRoutes(back *gin.RouterGroup) {
 		backCategoryApi.PUT("", controllers.UpdateCategoryByID)
 
 		// GetBrendByID -> id - si boyunca Category - in maglumatlaryny almak ucin ulanylyar
-		// backCategoryApi.GET(":id", controllers.GetCategoryByID)
+		backCategoryApi.GET(":id", controllers.GetCategoryByID)
 
 		// // GetCategories -> Ahli Category - leryn maglumatlaryny request query - den gelen
 		// // limit we page boyunca pagination ulanyp almak ucin ulanylyar
