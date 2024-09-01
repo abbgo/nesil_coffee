@@ -1,11 +1,14 @@
 package controllers
 
 import (
+	"context"
 	"nesil_coffe/config"
 	"nesil_coffe/helpers"
 	"nesil_coffe/models"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gosimple/slug"
 )
 
 func CreateCategory(c *gin.Context) {
@@ -24,4 +27,26 @@ func CreateCategory(c *gin.Context) {
 		return
 	}
 
+	// eger maglumatlar dogry bolsa onda categories tablisa maglumatlar gosulyar we gosulandan son gosulan maglumatyn id - si return edilyar
+	_, err = db.Exec(context.Background(),
+		"INSERT INTO categories (name,image,description,slug) VALUES ($1,$2,$3,$4)",
+		category.Name, category.Image, category.Description, slug.MakeLang(category.Name, "en"),
+	)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	// category - nyn maglumatlary gosulandan sonra suraty helper_images tablisa category ucin gosulan surat pozulyar
+	if category.Image != "" {
+		if err := DeleteImageFromDB(category.Image); err != nil {
+			helpers.HandleError(c, 400, err.Error())
+			return
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  true,
+		"message": "data successfully added",
+	})
 }
