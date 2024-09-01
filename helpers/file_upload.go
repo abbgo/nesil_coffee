@@ -17,8 +17,8 @@ func FileUpload(fileName, path string, context *gin.Context) (string, error) {
 
 	extensionFile := filepath.Ext(file.Filename)
 
-	if extensionFile != ".jpg" && extensionFile != ".JPG" {
-		return "", errors.New("the image must be .jpg format")
+	if extensionFile != ".jpg" && extensionFile != ".JPG" && extensionFile != ".JPEG" && extensionFile != ".jpeg" {
+		return "", errors.New("the image must be .jpg or .jpeg format")
 	}
 	newFileName := uuid.New().String() + extensionFile
 

@@ -19,7 +19,6 @@ func AddOrUpdateImage(c *gin.Context) {
 	defer db.Close()
 
 	var path, file_name string
-	// var resizedSize int
 
 	imageType := c.Query("image_type")
 
