@@ -1,6 +1,10 @@
 package back
 
-import "github.com/gin-gonic/gin"
+import (
+	controllers "nesil_coffe/controllers/back"
+
+	"github.com/gin-gonic/gin"
+)
 
 func BackImageRoutes(back *gin.RouterGroup) {
 	backImageApi := back.Group("/images")
