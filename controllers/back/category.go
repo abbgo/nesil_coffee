@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 	"nesil_coffe/config"
 	"nesil_coffe/helpers"
 	"nesil_coffe/models"
@@ -130,6 +131,7 @@ func GetCategories(c *gin.Context) {
 	var requestQuery helpers.StandartQuery
 	var count uint
 	var categories []models.Category
+	deletedAt := `IS NULL`
 
 	// initialize database connection
 	db, err := config.ConnDB()
@@ -149,4 +151,42 @@ func GetCategories(c *gin.Context) {
 		helpers.HandleError(c, 400, err.Error())
 		return
 	}
+
+	// limit we page boyunca offset hasaplanyar
+	offset := requestQuery.Limit * (requestQuery.Page - 1)
+
+	if requestQuery.IsDeleted {
+		deletedAt = `IS NOT NULL`
+	}
+
+	// database - den maglumatlaryn sany alynyar
+	queryCount := fmt.Sprintf(`SELECT COUNT(id) FROM categories WHERE deleted_at %s`, deletedAt)
+	if err = db.QueryRow(context.Background(), queryCount).Scan(&count); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	queryCategories := fmt.Sprintf(
+		`SELECT id,name,image,description FROM categories WHERE deleted_at %s ORDER BY created_at DESC LIMIT %d OFFSET %d`,
+		deletedAt, requestQuery.Limit, offset)
+	rowsCategory, err := db.Query(context.Background(), queryCategories)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer rowsCategory.Close()
+
+	for rowsCategory.Next() {
+		var category models.Category
+		if err := rowsCategory.Scan(&category.ID, &category.Name, &category.Image, &category.Description); err != nil {
+			helpers.HandleError(c, 400, err.Error())
+			return
+		}
+		categories = append(categories, category)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":     true,
+		"categories": categories,
+		"count":      count,
+	})
 }
