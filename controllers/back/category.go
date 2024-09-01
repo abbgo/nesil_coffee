@@ -66,4 +66,29 @@ func UpdateCategoryByID(c *gin.Context) {
 		helpers.HandleError(c, 400, err.Error())
 		return
 	}
+
+	// bind edilen maglumatlar barlanyar
+	if category.ID == "" {
+		helpers.HandleError(c, 400, "category id is required")
+		return
+	}
+	if err := helpers.ValidateRecordByID("categories", category.ID, "NULL", db); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	// database - daki maglumatlary request body - dan gelen maglumatlar bilen calysyas
+	_, err = db.Exec(context.Background(),
+		"UPDATE categories SET name=$1 , image=$2 , description=$3 , slug=$4 WHERE id=$5",
+		category.Name, category.Image, category.Description, slug.MakeLang(category.Name, "en"), category.ID,
+	)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  true,
+		"message": "data successfully updated",
+	})
 }
