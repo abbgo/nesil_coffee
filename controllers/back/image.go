@@ -104,11 +104,6 @@ func DeleteImage(c *gin.Context) {
 		return
 	}
 
-	if err := os.Remove(helpers.ServerPath + "assets/" + image.Image); err != nil {
-		helpers.HandleError(c, 400, err.Error())
-		return
-	}
-
 	c.JSON(http.StatusOK, gin.H{
 		"status":  true,
 		"message": "image successfully deleted",

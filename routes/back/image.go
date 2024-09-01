@@ -13,6 +13,6 @@ func BackImageRoutes(back *gin.RouterGroup) {
 		backImageApi.POST("", controllers.AddOrUpdateImage)
 
 		// // surat pozmak ucin ulanylyar
-		// backImageApi.DELETE("", controllers.DeleteImage)
+		backImageApi.DELETE("", controllers.DeleteImage)
 	}
 }
