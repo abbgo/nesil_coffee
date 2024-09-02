@@ -16,7 +16,7 @@ type JWTClaimForAdmin struct {
 	jwt.StandardClaims
 }
 
-func GenerateAccessToken(phoneNumber, adminID string, isSuperAdmin bool) (string /* string,*/, error) {
+func GenerateAccessToken(phoneNumber, adminID string) (string, error) {
 	accessTokenTimeOut, err := strconv.Atoi(os.Getenv("ACCESS_TOKEN_TIMEOUT"))
 	if err != nil {
 		return "", err
