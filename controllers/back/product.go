@@ -32,8 +32,8 @@ func CreateProduct(c *gin.Context) {
 		return
 	}
 
-	if len(product.Images) == 0 {
-		helpers.HandleError(c, 400, "images of product is requred")
+	if err := models.ValidateCreateProduct(product); err != nil {
+		helpers.HandleError(c, 400, err.Error())
 		return
 	}
 
