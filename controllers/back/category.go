@@ -91,6 +91,14 @@ func UpdateCategoryByID(c *gin.Context) {
 		return
 	}
 
+	// category - nyn maglumatlary uytgedilenden sonra suraty helper_images tablisa category ucin gosulan surat pozulyar
+	if category.Image != "" {
+		if err := DeleteImageFromDB(category.Image); err != nil {
+			helpers.HandleError(c, 400, err.Error())
+			return
+		}
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"status":  true,
 		"message": "data successfully updated",
