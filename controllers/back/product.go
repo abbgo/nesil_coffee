@@ -40,8 +40,8 @@ func CreateProduct(c *gin.Context) {
 	// eger maglumatlar dogry bolsa db maglumatlar gosulyar we gosulandan son gosulan maglumatyn id - si return edilyar
 	var productID string
 	if err := db.QueryRow(context.Background(),
-		"INSERT INTO products (name,description,slug) VALUES ($1,$2,$3) RETURNING id",
-		product.Name, product.Description, slug.MakeLang(product.Name, "en"),
+		"INSERT INTO products (name,description,category_id,slug) VALUES ($1,$2,$3,$4) RETURNING id",
+		product.Name, product.Description, product.CategoryID, slug.MakeLang(product.Name, "en"),
 	).Scan(&productID); err != nil {
 		helpers.HandleError(c, 400, err.Error())
 		return
