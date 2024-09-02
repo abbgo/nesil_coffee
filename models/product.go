@@ -35,3 +35,32 @@ func ValidateCreateProduct(product Product) error {
 
 	return nil
 }
+
+func ValidateUpdateProduct(product Product) error {
+	// initialize database connection
+	db, err := config.ConnDB()
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	// bind edilen maglumatlar barlanyar
+	if product.ID == "" {
+		return errors.New("product id is required")
+	}
+	if err := helpers.ValidateRecordByID("products", product.ID, "NULL", db); err != nil {
+		return err
+	}
+
+	// harydyn suratlary barlanyar
+	if len(product.Images) == 0 {
+		return errors.New("images of product is requred")
+	}
+
+	// harydyn kategoriyasy barlanyar
+	if err := helpers.ValidateRecordByID("categories", product.CategoryID, "NULL", db); err != nil {
+		return err
+	}
+
+	return nil
+}

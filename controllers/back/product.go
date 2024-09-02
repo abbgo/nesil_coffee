@@ -85,20 +85,15 @@ func UpdateProductByID(c *gin.Context) {
 		return
 	}
 
-	// bind edilen maglumatlar barlanyar
-	if product.ID == "" {
-		helpers.HandleError(c, 400, "product id is required")
-		return
-	}
-	if err := helpers.ValidateRecordByID("products", product.ID, "NULL", db); err != nil {
+	if err := models.ValidateUpdateProduct(product); err != nil {
 		helpers.HandleError(c, 400, err.Error())
 		return
 	}
 
 	// database - daki maglumatlary request body - dan gelen maglumatlar bilen calysyas
 	_, err = db.Exec(context.Background(),
-		"UPDATE products SET name=$1 , description=$2 , slug=$3 WHERE id=$4",
-		product.Name, product.Description, slug.MakeLang(product.Name, "en"), product.ID,
+		"UPDATE products SET name=$1 , description=$2 , category_id=$3 , slug=$4 WHERE id=$5",
+		product.Name, product.Description, product.CategoryID, slug.MakeLang(product.Name, "en"), product.ID,
 	)
 	if err != nil {
 		helpers.HandleError(c, 400, err.Error())
