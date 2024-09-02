@@ -6,8 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CategoryBackRoutes(back *gin.RouterGroup) {
-	api := back.Group("/categories")
+func ProductBackRoutes(back *gin.RouterGroup) {
+	api := back.Group("/products")
 	{
 		// CreateCategory -> Category gosmak ulanylar
 		api.POST("", controllers.CreateCategory)
