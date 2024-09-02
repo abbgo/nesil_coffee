@@ -2,10 +2,13 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 	"nesil_coffe/config"
 	"nesil_coffe/helpers"
 	"nesil_coffe/models"
+	"nesil_coffe/serializations"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gosimple/slug"
@@ -176,5 +179,100 @@ func GetProductByID(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":  true,
 		"product": product,
+	})
+}
+
+func GetProducts(c *gin.Context) {
+	var requestQuery serializations.CategoryQuery
+	var count uint
+	var products []models.Product
+	deletedAt := `IS NULL`
+	var searchQuery, search, searchStr string
+
+	// initialize database connection
+	db, err := config.ConnDB()
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer db.Close()
+
+	// request query - den maglumatlar bind edilyar
+	if err := c.Bind(&requestQuery); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	// request query - den maglumatlar validate edilyar
+	if err := helpers.ValidateStructData(&requestQuery); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	// limit we page boyunca offset hasaplanyar
+	offset := requestQuery.Limit * (requestQuery.Page - 1)
+
+	if requestQuery.IsDeleted {
+		deletedAt = `IS NOT NULL`
+	}
+
+	if requestQuery.Search != "" {
+		incomingsSarch := slug.MakeLang(c.Query("search"), "en")
+		search = strings.ReplaceAll(incomingsSarch, "-", " | ")
+		searchStr = fmt.Sprintf("%%%s%%", search)
+	}
+
+	if requestQuery.Search != "" {
+		searchQuery = fmt.Sprintf(` AND (to_tsvector(slug) @@ to_tsquery('%s') OR slug LIKE '%s') `, search, searchStr)
+	}
+
+	// database - den maglumatlaryn sany alynyar
+	queryCount := fmt.Sprintf(`SELECT COUNT(id) FROM products WHERE deleted_at %s %s`, deletedAt, searchQuery)
+	if err = db.QueryRow(context.Background(), queryCount).Scan(&count); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	// database maglumatlar alynyar
+	queryProducts := fmt.Sprintf(
+		`SELECT id,name,description FROM products WHERE deleted_at %s %s ORDER BY created_at DESC LIMIT %d OFFSET %d`,
+		deletedAt, searchQuery, requestQuery.Limit, offset)
+	rowsProduct, err := db.Query(context.Background(), queryProducts)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer rowsProduct.Close()
+
+	for rowsProduct.Next() {
+		var product models.Product
+		if err := rowsProduct.Scan(&product.ID, &product.Name, &product.Description); err != nil {
+			helpers.HandleError(c, 400, err.Error())
+			return
+		}
+
+		//  harydyn suratlary db - den alynyar
+		rowsImages, err := db.Query(context.Background(), "SELECT image FROM product_images WHERE product_id=$1", product.ID)
+		if err != nil {
+			helpers.HandleError(c, 400, err.Error())
+			return
+		}
+		defer rowsImages.Close()
+
+		for rowsImages.Next() {
+			var image string
+			if err := rowsImages.Scan(&image); err != nil {
+				helpers.HandleError(c, 400, err.Error())
+				return
+			}
+			product.Images = append(product.Images, image)
+		}
+
+		products = append(products, product)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":   true,
+		"products": products,
+		"count":    count,
 	})
 }
