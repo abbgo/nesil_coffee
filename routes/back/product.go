@@ -9,8 +9,8 @@ import (
 func ProductBackRoutes(back *gin.RouterGroup) {
 	api := back.Group("/products")
 	{
-		// CreateCategory -> Category gosmak ulanylar
-		api.POST("", controllers.CreateCategory)
+		// CreateProduct -> Product gosmak ulanylar
+		api.POST("", controllers.CreateProduct)
 
 		// UpdateCategoryByID -> id boyunca Category - in maglumatlaryny update etmek ucin ulanylyar
 		api.PUT("", controllers.UpdateCategoryByID)
