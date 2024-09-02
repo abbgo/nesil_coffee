@@ -22,7 +22,7 @@ func ProductBackRoutes(back *gin.RouterGroup) {
 		// limit we page boyunca pagination ulanyp almak ucin ulanylyar
 		api.GET("", controllers.GetProducts)
 
-		// DeleteCategoryByID -> id boyunca category pozmak ucin ulanylyar
-		api.DELETE(":id", controllers.DeleteCategoryByID)
+		// DeleteProductByID -> id boyunca Product pozmak ucin ulanylyar
+		api.DELETE(":id", controllers.DeleteProductByID)
 	}
 }
