@@ -12,8 +12,8 @@ func RecipeBackRoutes(back *gin.RouterGroup) {
 		// CreateRecipe -> Resepte gosmak ulanylar
 		api.POST("", controllers.CreateRecipe)
 
-		// UpdateProductByID -> id boyunca Product - in maglumatlaryny update etmek ucin ulanylyar
-		api.PUT("", controllers.UpdateProductByID)
+		// UpdateRecipeByID -> id boyunca Resepte - in maglumatlaryny update etmek ucin ulanylyar
+		api.PUT("", controllers.UpdateRecipeByID)
 
 		// GetBrendBGetProductByIDyID -> id - si boyunca Product - in maglumatlaryny almak ucin ulanylyar
 		api.GET(":id", controllers.GetProductByID)
