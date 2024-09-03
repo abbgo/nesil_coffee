@@ -9,8 +9,8 @@ import (
 func RecipeBackRoutes(back *gin.RouterGroup) {
 	api := back.Group("/recipes")
 	{
-		// CreateProduct -> Product gosmak ulanylar
-		api.POST("", controllers.CreateProduct)
+		// CreateRecipe -> Resepte gosmak ulanylar
+		api.POST("", controllers.CreateRecipe)
 
 		// UpdateProductByID -> id boyunca Product - in maglumatlaryny update etmek ucin ulanylyar
 		api.PUT("", controllers.UpdateProductByID)
