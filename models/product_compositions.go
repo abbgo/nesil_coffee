@@ -6,6 +6,6 @@ type ProductComposition struct {
 	NameRU     string `json:"name_ru" binding:"required"`
 	NameEN     string `json:"name_en" binding:"required"`
 	Percentage int8   `json:"percentage" binding:"required"`
-	ProductID  string `json:"product_id"`
-	RecipeID   string `json:"recipe_id"`
+	ProductID  string `json:"product_id,omitempty"`
+	RecipeID   string `json:"recipe_id,omitempty"`
 }

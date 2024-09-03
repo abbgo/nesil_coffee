@@ -15,8 +15,8 @@ func RecipeBackRoutes(back *gin.RouterGroup) {
 		// UpdateRecipeByID -> id boyunca Resepte - in maglumatlaryny update etmek ucin ulanylyar
 		api.PUT("", controllers.UpdateRecipeByID)
 
-		// GetBrendBGetProductByIDyID -> id - si boyunca Product - in maglumatlaryny almak ucin ulanylyar
-		api.GET(":id", controllers.GetProductByID)
+		// GetRecipeByID -> id - si boyunca Reseptin maglumatlaryny almak ucin ulanylyar
+		api.GET(":id", controllers.GetRecipeByID)
 
 		// GetProducts -> Ahli Product - laryn maglumatlaryny request query - den gelen
 		// limit we page boyunca pagination ulanyp almak ucin ulanylyar
