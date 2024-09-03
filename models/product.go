@@ -7,13 +7,19 @@ import (
 )
 
 type Product struct {
-	ID           string               `json:"id,omitempty"`
-	Name         string               `json:"name" binding:"required"`
-	Description  string               `json:"description" binding:"required"`
-	Images       []string             `json:"images" binding:"required"`
-	CategoryID   string               `json:"category_id" binding:"required"`
-	Compositions []ProductComposition `json:"compositions"`
-	Slug         string               `json:"slug,omitempty"`
+	ID            string               `json:"id,omitempty"`
+	NameTM        string               `json:"name_tm" binding:"required"`
+	NameRU        string               `json:"name_ru" binding:"required"`
+	NameEN        string               `json:"name_en" binding:"required"`
+	DescriptionTM string               `json:"description_tm" binding:"required"`
+	DescriptionRU string               `json:"description_ru" binding:"required"`
+	DescriptionEN string               `json:"description_en" binding:"required"`
+	Images        []string             `json:"images" binding:"required"`
+	CategoryID    string               `json:"category_id" binding:"required"`
+	Compositions  []ProductComposition `json:"compositions"`
+	SlugTM        string               `json:"slug_tm,omitempty"`
+	SlugRU        string               `json:"slug_ru,omitempty"`
+	SlugEN        string               `json:"slug_en,omitempty"`
 }
 
 func ValidateCreateProduct(product Product) error {
