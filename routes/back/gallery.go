@@ -9,8 +9,8 @@ import (
 func GalleryBackRoutes(back *gin.RouterGroup) {
 	api := back.Group("/galleries")
 	{
-		// CreateProduct -> Product gosmak ulanylar
-		api.POST("", controllers.CreateProduct)
+		// CreateGallery -> Galareya surat ya-da video gosmak ulanylar
+		api.POST("", controllers.CreateGallery)
 
 		// UpdateProductByID -> id boyunca Product - in maglumatlaryny update etmek ucin ulanylyar
 		api.PUT("", controllers.UpdateProductByID)
