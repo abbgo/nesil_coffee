@@ -8,6 +8,7 @@ import (
 	"nesil_coffe/models"
 	"nesil_coffe/serializations"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -363,55 +364,55 @@ func GetProducts(c *gin.Context) {
 	})
 }
 
-// func DeleteProductByID(c *gin.Context) {
-// 	// initialize database connection
-// 	db, err := config.ConnDB()
-// 	if err != nil {
-// 		helpers.HandleError(c, 400, err.Error())
-// 		return
-// 	}
-// 	defer db.Close()
+func DeleteProductByID(c *gin.Context) {
+	// initialize database connection
+	db, err := config.ConnDB()
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer db.Close()
 
-// 	// request parametr - den id alynyar
-// 	ID := c.Param("id")
+	// request parametr - den id alynyar
+	ID := c.Param("id")
 
-// 	// maglumatyn db barlygy barlanyar
-// 	if err := helpers.ValidateRecordByID("products", ID, "NULL", db); err != nil {
-// 		helpers.HandleError(c, 400, err.Error())
-// 		return
-// 	}
+	// maglumatyn db barlygy barlanyar
+	if err := helpers.ValidateRecordByID("products", ID, "NULL", db); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
 
-// 	// eger maglumat bar bolsa onda harydyn suratlary db - den alynyar we pozulyar
-// 	rowsImage, err := db.Query(context.Background(), "SELECT image FROM product_images WHERE product_id=$1", ID)
-// 	if err != nil {
-// 		helpers.HandleError(c, 400, err.Error())
-// 		return
-// 	}
-// 	defer rowsImage.Close()
+	// eger maglumat bar bolsa onda harydyn suratlary db - den alynyar we pozulyar
+	rowsImage, err := db.Query(context.Background(), "SELECT image FROM product_images WHERE product_id=$1", ID)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer rowsImage.Close()
 
-// 	for rowsImage.Next() {
-// 		var image string
-// 		if err := rowsImage.Scan(&image); err != nil {
-// 			helpers.HandleError(c, 400, err.Error())
-// 			return
-// 		}
+	for rowsImage.Next() {
+		var image string
+		if err := rowsImage.Scan(&image); err != nil {
+			helpers.HandleError(c, 400, err.Error())
+			return
+		}
 
-// 		// local path - dan surat pozulyar
-// 		if err := os.Remove(helpers.ServerPath + image); err != nil {
-// 			helpers.HandleError(c, 400, err.Error())
-// 			return
-// 		}
-// 	}
+		// local path - dan surat pozulyar
+		if err := os.Remove(helpers.ServerPath + image); err != nil {
+			helpers.HandleError(c, 400, err.Error())
+			return
+		}
+	}
 
-// 	// harydyn suraty pozulandan son haryt we onun bilen baglanysykly maglumatlar pozulyar
-// 	_, err = db.Exec(context.Background(), "DELETE FROM products WHERE id = $1", ID)
-// 	if err != nil {
-// 		helpers.HandleError(c, 400, err.Error())
-// 		return
-// 	}
+	// harydyn suraty pozulandan son haryt we onun bilen baglanysykly maglumatlar pozulyar
+	_, err = db.Exec(context.Background(), "DELETE FROM products WHERE id = $1", ID)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
 
-// 	c.JSON(http.StatusOK, gin.H{
-// 		"status":  true,
-// 		"message": "data successfully deleted",
-// 	})
-// }
+	c.JSON(http.StatusOK, gin.H{
+		"status":  true,
+		"message": "data successfully deleted",
+	})
+}
