@@ -286,7 +286,7 @@ func GetProducts(c *gin.Context) {
 
 	// database maglumatlar alynyar
 	queryProducts := fmt.Sprintf(
-		`SELECT id,name,description FROM products WHERE deleted_at %s %s ORDER BY created_at DESC LIMIT %d OFFSET %d`,
+		`SELECT id,name,description,category_id FROM products WHERE deleted_at %s %s ORDER BY created_at DESC LIMIT %d OFFSET %d`,
 		deletedAt, searchQuery, requestQuery.Limit, offset)
 	rowsProduct, err := db.Query(context.Background(), queryProducts)
 	if err != nil {
@@ -297,7 +297,7 @@ func GetProducts(c *gin.Context) {
 
 	for rowsProduct.Next() {
 		var product models.Product
-		if err := rowsProduct.Scan(&product.ID, &product.Name, &product.Description); err != nil {
+		if err := rowsProduct.Scan(&product.ID, &product.Name, &product.Description, &product.CategoryID); err != nil {
 			helpers.HandleError(c, 400, err.Error())
 			return
 		}
@@ -317,6 +317,28 @@ func GetProducts(c *gin.Context) {
 				return
 			}
 			product.Images = append(product.Images, image)
+		}
+
+		// harydyn duzumi alynyar
+		rowsComposition, err := db.Query(context.Background(),
+			"SELECT id,name,percentage FROM product_compositions WHERE product_id=$1", product.ID,
+		)
+		if err != nil {
+			helpers.HandleError(c, 400, err.Error())
+			return
+		}
+		defer rowsComposition.Close()
+
+		for rowsComposition.Next() {
+			var composition models.ProductComposition
+			if err := rowsComposition.Scan(&composition.ID, &composition.Name, &composition.Percentage); err != nil {
+				helpers.HandleError(c, 400, err.Error())
+				return
+			}
+
+			if composition.ID != "" {
+				product.Compositions = append(product.Compositions, composition)
+			}
 		}
 
 		products = append(products, product)
