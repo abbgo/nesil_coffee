@@ -87,38 +87,38 @@ func UpdateCategoryByID(c *gin.Context) {
 	})
 }
 
-// func GetCategoryByID(c *gin.Context) {
-// 	// initialize database connection
-// 	db, err := config.ConnDB()
-// 	if err != nil {
-// 		helpers.HandleError(c, 400, err.Error())
-// 		return
-// 	}
-// 	defer db.Close()
+func GetCategoryByID(c *gin.Context) {
+	// initialize database connection
+	db, err := config.ConnDB()
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer db.Close()
 
-// 	// request parametrden category id alynyar
-// 	categoryID := c.Param("id")
+	// request parametrden category id alynyar
+	categoryID := c.Param("id")
 
-// 	// database - den request parametr - den gelen id boyunca maglumat cekilyar
-// 	var category models.Category
-// 	if err := db.QueryRow(context.Background(),
-// 		"SELECT id,name,image,description FROM categories WHERE id = $1", categoryID).
-// 		Scan(&category.ID, &category.Name, &category.Image, &category.Description); err != nil {
-// 		helpers.HandleError(c, 400, err.Error())
-// 		return
-// 	}
+	// database - den request parametr - den gelen id boyunca maglumat cekilyar
+	var category models.Category
+	if err := db.QueryRow(context.Background(),
+		"SELECT id,name_tm,name_ru,name_en FROM categories WHERE id = $1", categoryID).
+		Scan(&category.ID, &category.NameTM, &category.NameRU, &category.NameEN); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
 
-// 	// eger databse sol maglumat yok bolsa error return edilyar
-// 	if category.ID == "" {
-// 		helpers.HandleError(c, 404, "record not found")
-// 		return
-// 	}
+	// eger databse sol maglumat yok bolsa error return edilyar
+	if category.ID == "" {
+		helpers.HandleError(c, 404, "record not found")
+		return
+	}
 
-// 	c.JSON(http.StatusOK, gin.H{
-// 		"status":   true,
-// 		"category": category,
-// 	})
-// }
+	c.JSON(http.StatusOK, gin.H{
+		"status":   true,
+		"category": category,
+	})
+}
 
 // func GetCategories(c *gin.Context) {
 // 	var requestQuery serializations.CategoryQuery
