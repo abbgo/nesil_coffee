@@ -11,6 +11,5 @@ func BackVideoRoutes(back *gin.RouterGroup) {
 	{
 		// video gosmak ya-da uytgetmek ucin ulanylyar
 		api.POST("", controllers.AddOrUpdateVideo)
-
 	}
 }

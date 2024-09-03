@@ -18,10 +18,6 @@ func AddOrUpdateVideo(c *gin.Context) {
 	}
 	defer db.Close()
 
-	var path, file_name string
-
-	imageType := c.Query("image_type")
-
 	oldImage := c.PostForm("old_path")
 	if oldImage != "" {
 		if err := os.Remove(helpers.ServerPath + oldImage); err != nil {
@@ -36,19 +32,7 @@ func AddOrUpdateVideo(c *gin.Context) {
 		}
 	}
 
-	switch imageType {
-	case "product":
-		path = "product"
-		file_name = "image"
-	case "media":
-		path = "media"
-		file_name = "image"
-	default:
-		helpers.HandleError(c, 400, "invalid image")
-		return
-	}
-
-	image, err := helpers.FileUpload(file_name, path, c)
+	image, err := helpers.FileUpload("video", "media", c)
 	if err != nil {
 		helpers.HandleError(c, 400, err.Error())
 		return
