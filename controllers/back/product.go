@@ -56,6 +56,20 @@ func CreateProduct(c *gin.Context) {
 		return
 	}
 
+	// eger harydyn duzumi girizilen bolsa ol hem db gosulyar
+	if len(product.Compositions) != 0 {
+		for _, composition := range product.Compositions {
+			_, err = db.Exec(context.Background(),
+				"INSERT INTO product_compositions (name,percentage,product_id) VALUES ($1,$2,$3)",
+				composition.Name, composition.Percentage, productID,
+			)
+			if err != nil {
+				helpers.HandleError(c, 400, err.Error())
+				return
+			}
+		}
+	}
+
 	// harydyn suratlary db gosulandan son helper_images tablisadan suratlar pozulyar
 	_, err = db.Exec(context.Background(), "DELETE FROM helper_images WHERE image = ANY($1::VARCHAR[])", product.Images)
 	if err != nil {

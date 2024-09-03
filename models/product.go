@@ -7,13 +7,13 @@ import (
 )
 
 type Product struct {
-	ID                  string               `json:"id,omitempty"`
-	Name                string               `json:"name" binding:"required"`
-	Description         string               `json:"description" binding:"required"`
-	Images              []string             `json:"images" binding:"required"`
-	CategoryID          string               `json:"category_id" binding:"required"`
-	ProductCompositions []ProductComposition `json:"product_compositions"`
-	Slug                string               `json:"slug,omitempty"`
+	ID           string               `json:"id,omitempty"`
+	Name         string               `json:"name" binding:"required"`
+	Description  string               `json:"description" binding:"required"`
+	Images       []string             `json:"images" binding:"required"`
+	CategoryID   string               `json:"category_id" binding:"required"`
+	Compositions []ProductComposition `json:"compositions"`
+	Slug         string               `json:"slug,omitempty"`
 }
 
 func ValidateCreateProduct(product Product) error {
