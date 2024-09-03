@@ -93,3 +93,51 @@ func LoginAdmin(c *gin.Context) {
 		"status":       true,
 	})
 }
+
+func UpdateAdmin(c *gin.Context) {
+	adminID, hasID := c.Get("id")
+	if !hasID {
+		helpers.HandleError(c, 400, "admin id is required")
+		return
+	}
+
+	var ok bool
+	admin_id, ok := adminID.(string)
+	if !ok {
+		helpers.HandleError(c, 400, "admin id must be string")
+		return
+	}
+
+	db, err := config.ConnDB()
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer db.Close()
+
+	// request body - den admin - in maglumatlary alynyar
+	var admin models.Admin
+	if err := c.BindJSON(&admin); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	// parol hashlenyan
+	hashPassword, err := helpers.HashPassword(admin.Password)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	// eger admin database - de bar bolsa onda onun maglumatlary request body - dan gelen maglumatlar bilen update edilyar
+	_, err = db.Exec(context.Background(), "UPDATE admins SET login = $1 , password = $2 WHERE id = $3", admin.Login, hashPassword, admin_id)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  true,
+		"message": "data successfully updated",
+	})
+}

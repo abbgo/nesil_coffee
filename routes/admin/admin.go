@@ -2,6 +2,7 @@ package adminApi
 
 import (
 	controllers "nesil_coffe/controllers/admin"
+	"nesil_coffe/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,7 +17,7 @@ func AdminRoutes(back *gin.RouterGroup) {
 		admin.POST("login", controllers.LoginAdmin)
 
 		// UpdateAdmin admin - in maglumatlaryny uytgetmek ucin ulanylyar.
-		admin.PUT("update", middlewares.IsSuperAdmin(), controllers.UpdateAdmin)
+		admin.PUT("update", middlewares.CheckAdmin(), controllers.UpdateAdmin)
 
 		// // UpdateAdminPassword admin - in parolyny uytgetmek ucin ulanylyar.
 		// admin.PUT("update-password", middlewares.IsSuperAdmin(), controllers.UpdateAdminPassword)
