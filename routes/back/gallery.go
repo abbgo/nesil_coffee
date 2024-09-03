@@ -18,9 +18,9 @@ func GalleryBackRoutes(back *gin.RouterGroup) {
 		// GetGalleryByID -> id - si boyunca gallerinin maglumatlaryny almak ucin ulanylyar
 		api.GET(":id", controllers.GetGalleryByID)
 
-		// // GetProducts -> Ahli Product - laryn maglumatlaryny request query - den gelen
-		// // limit we page boyunca pagination ulanyp almak ucin ulanylyar
-		// api.GET("", controllers.GetProducts)
+		// GetGalleries -> Ahli gallery maglumatlaryny request query - den gelen
+		// limit we page boyunca pagination ulanyp almak ucin ulanylyar
+		api.GET("", controllers.GetGalleries)
 
 		// // DeleteProductByID -> id boyunca Product pozmak ucin ulanylyar
 		// api.DELETE(":id", controllers.DeleteProductByID)

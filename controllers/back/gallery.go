@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 	"nesil_coffe/config"
 	"nesil_coffe/helpers"
 	"nesil_coffe/models"
@@ -122,5 +123,71 @@ func GetGalleryByID(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":  true,
 		"gallery": gallery,
+	})
+}
+
+func GetGalleries(c *gin.Context) {
+	var requestQuery helpers.StandartQuery
+	var count uint
+	var galleries []models.Gallery
+	deletedAt := `IS NULL`
+
+	// initialize database connection
+	db, err := config.ConnDB()
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer db.Close()
+
+	// request query - den maglumatlar bind edilyar
+	if err := c.Bind(&requestQuery); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	// request query - den maglumatlar validate edilyar
+	if err := helpers.ValidateStructData(&requestQuery); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	// limit we page boyunca offset hasaplanyar
+	offset := requestQuery.Limit * (requestQuery.Page - 1)
+
+	if requestQuery.IsDeleted {
+		deletedAt = `IS NOT NULL`
+	}
+
+	// database - den maglumatlaryn sany alynyar
+	queryCount := fmt.Sprintf(`SELECT COUNT(id) FROM galleries WHERE deleted_at %s`, deletedAt)
+	if err = db.QueryRow(context.Background(), queryCount).Scan(&count); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	// database maglumatlar alynyar
+	queryGalleries := fmt.Sprintf(
+		`SELECT id,media,media_type FROM galleries WHERE deleted_at %s ORDER BY created_at DESC LIMIT %d OFFSET %d`,
+		deletedAt, requestQuery.Limit, offset)
+	rowsGallery, err := db.Query(context.Background(), queryGalleries)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer rowsGallery.Close()
+
+	for rowsGallery.Next() {
+		var gallery models.Gallery
+		if err := rowsGallery.Scan(&gallery.ID, &gallery.Media, &gallery.MediaType); err != nil {
+			helpers.HandleError(c, 400, err.Error())
+			return
+		}
+		galleries = append(galleries, gallery)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":    true,
+		"galleries": galleries,
+		"count":     count,
 	})
 }
