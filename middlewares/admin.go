@@ -58,12 +58,12 @@ func CheckAdmin(position string) gin.HandlerFunc {
 		}
 		defer db.Close()
 
-		if err := helpers.ValidateRecordByID("admins", claims.AdminID, "NULL", db); err != nil {
+		if err := helpers.ValidateRecordByID("admins", claims.ID, "NULL", db); err != nil {
 			c.AbortWithStatusJSON(404, gin.H{"message": "record not found", "status": false})
 			return
 		}
 
-		c.Set("id", claims.AdminID)
+		c.Set("id", claims.ID)
 		c.Next()
 	}
 }

@@ -11,12 +11,12 @@ import (
 var JwtKey = []byte(os.Getenv("JWT_SECRET_KEY"))
 
 type JWTClaimForAdmin struct {
-	PhoneNumber string `json:"phone_number"`
-	AdminID     string `json:"admin_id"`
+	Login string `json:"login"`
+	ID    string `json:"id"`
 	jwt.StandardClaims
 }
 
-func GenerateAccessToken(phoneNumber, adminID string) (string, error) {
+func GenerateAccessToken(login, id string) (string, error) {
 	accessTokenTimeOut, err := strconv.Atoi(os.Getenv("ACCESS_TOKEN_TIMEOUT"))
 	if err != nil {
 		return "", err
@@ -24,8 +24,8 @@ func GenerateAccessToken(phoneNumber, adminID string) (string, error) {
 	expirationTimeAccessToken := time.Now().Add(time.Duration(accessTokenTimeOut) * time.Second)
 
 	claimsAccessToken := &JWTClaimForAdmin{
-		PhoneNumber: phoneNumber,
-		AdminID:     adminID,
+		Login: login,
+		ID:    id,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTimeAccessToken.Unix(),
 		},

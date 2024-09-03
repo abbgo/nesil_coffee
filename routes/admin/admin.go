@@ -12,8 +12,8 @@ func AdminRoutes(back *gin.RouterGroup) {
 		// RegisterAdmin admin - i registrasiya etmek ucin ulanylyar.
 		admin.POST("register", controllers.RegisterAdmin)
 
-		// // LoginAdmin admin - i login etmek ucin ulanylyar.
-		// admin.POST("login", controllers.LoginAdmin)
+		// LoginAdmin admin - i login etmek ucin ulanylyar.
+		admin.POST("login", controllers.LoginAdmin)
 
 		// // UpdateAdmin admin - in maglumatlaryny uytgetmek ucin ulanylyar.
 		// admin.PUT("update", middlewares.IsSuperAdmin(), controllers.UpdateAdmin)
