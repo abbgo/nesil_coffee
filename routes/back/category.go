@@ -18,9 +18,9 @@ func CategoryBackRoutes(back *gin.RouterGroup) {
 		// GetCategoryByID -> id - si boyunca Category - in maglumatlaryny almak ucin ulanylyar
 		api.GET(":id", controllers.GetCategoryByID)
 
-		// // GetCategories -> Ahli Category - leryn maglumatlaryny request query - den gelen
-		// // limit we page boyunca pagination ulanyp almak ucin ulanylyar
-		// api.GET("", controllers.GetCategories)
+		// GetCategories -> Ahli Category - leryn maglumatlaryny request query - den gelen
+		// limit we page boyunca pagination ulanyp almak ucin ulanylyar
+		api.GET("", controllers.GetCategories)
 
 		// // DeleteCategoryByID -> id boyunca category pozmak ucin ulanylyar
 		// api.DELETE(":id", controllers.DeleteCategoryByID)
