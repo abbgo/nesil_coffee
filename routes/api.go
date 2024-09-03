@@ -36,6 +36,9 @@ func Routes() *gin.Engine {
 
 		// bu route - ler back video ucin doredilen rout - laryn toplumy
 		backApi.BackVideoRoutes(back)
+
+		// bu route - ler back resepteler ucin doredilen rout - laryn toplumy
+		backApi.RecipeBackRoutes(back)
 	}
 
 	return routes
