@@ -91,3 +91,36 @@ func UpdateGalleryByID(c *gin.Context) {
 		"message": "data successfully updated",
 	})
 }
+
+func GetGalleryByID(c *gin.Context) {
+	// initialize database connection
+	db, err := config.ConnDB()
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer db.Close()
+
+	// request parametrden category id alynyar
+	galleryID := c.Param("id")
+
+	// database - den request parametr - den gelen id boyunca maglumat cekilyar
+	var gallery models.Gallery
+	if err := db.QueryRow(context.Background(),
+		"SELECT id,media,media_type FROM galleries WHERE id = $1", galleryID).
+		Scan(&gallery.ID, &gallery.Media, &gallery.MediaType); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	// eger databse sol maglumat yok bolsa error return edilyar
+	if gallery.ID == "" {
+		helpers.HandleError(c, 404, "record not found")
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  true,
+		"gallery": gallery,
+	})
+}
