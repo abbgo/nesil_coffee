@@ -7,6 +7,7 @@ import (
 	"nesil_coffe/helpers"
 	"nesil_coffe/models"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -189,5 +190,42 @@ func GetGalleries(c *gin.Context) {
 		"status":    true,
 		"galleries": galleries,
 		"count":     count,
+	})
+}
+
+func DeleteGalleryByID(c *gin.Context) {
+	// initialize database connection
+	db, err := config.ConnDB()
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer db.Close()
+
+	// request parametr - den id alynyar
+	ID := c.Param("id")
+	var gallery models.Gallery
+	db.QueryRow(context.Background(), "SELECT id,media FROM galleries WHERE id=$1", ID).Scan(&gallery.ID, &gallery.Media)
+	if gallery.ID == "" {
+		helpers.HandleError(c, 404, "record not found")
+		return
+	}
+
+	// local path - dan surat pozulyar
+	if err := os.Remove(helpers.ServerPath + gallery.Media); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	// category - nyn suraty pozulandan son category we onun bilen baglanysykly maglumatlar pozulyar
+	_, err = db.Exec(context.Background(), "DELETE FROM galleries WHERE id = $1", ID)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  true,
+		"message": "data successfully deleted",
 	})
 }
