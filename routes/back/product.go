@@ -15,8 +15,8 @@ func ProductBackRoutes(back *gin.RouterGroup) {
 		// UpdateProductByID -> id boyunca Product - in maglumatlaryny update etmek ucin ulanylyar
 		api.PUT("", controllers.UpdateProductByID)
 
-		// // GetBrendBGetProductByIDyID -> id - si boyunca Product - in maglumatlaryny almak ucin ulanylyar
-		// api.GET(":id", controllers.GetProductByID)
+		// GetBrendBGetProductByIDyID -> id - si boyunca Product - in maglumatlaryny almak ucin ulanylyar
+		api.GET(":id", controllers.GetProductByID)
 
 		// // GetProducts -> Ahli Product - laryn maglumatlaryny request query - den gelen
 		// // limit we page boyunca pagination ulanyp almak ucin ulanylyar
