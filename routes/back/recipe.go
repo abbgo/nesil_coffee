@@ -22,7 +22,7 @@ func RecipeBackRoutes(back *gin.RouterGroup) {
 		// limit we page boyunca pagination ulanyp almak ucin ulanylyar
 		api.GET("", controllers.GetRecipes)
 
-		// DeleteProductByID -> id boyunca Product pozmak ucin ulanylyar
-		api.DELETE(":id", controllers.DeleteProductByID)
+		// DeleteRecipeByID -> id boyunca Resepte pozmak ucin ulanylyar
+		api.DELETE(":id", controllers.DeleteRecipeByID)
 	}
 }
