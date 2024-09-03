@@ -25,7 +25,7 @@ func RegisterAdmin(c *gin.Context) {
 		return
 	}
 
-	if err := models.ValidateAdmin(admin, true); err != nil {
+	if err := models.ValidateRegisterAdmin(admin); err != nil {
 		helpers.HandleError(c, 400, err.Error())
 		return
 	}
