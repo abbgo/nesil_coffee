@@ -13,7 +13,7 @@ import (
 // CheckAdmin middleware ahli admin - lere dostup beryar
 // gelen request - in admin tarapyndan gelip gelmedigini barlayar
 // we admin bolmasa gecirmeyar
-func CheckAdmin(position string) gin.HandlerFunc {
+func CheckAdmin() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenStr := c.GetHeader("Authorization")
 		if tokenStr == "" {
