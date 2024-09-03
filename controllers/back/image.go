@@ -40,9 +40,6 @@ func AddOrUpdateImage(c *gin.Context) {
 	case "product":
 		path = "product"
 		file_name = "image"
-	case "category":
-		path = "category"
-		file_name = "image"
 	case "media":
 		path = "media"
 		file_name = "image"
