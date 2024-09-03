@@ -12,8 +12,8 @@ func GalleryBackRoutes(back *gin.RouterGroup) {
 		// CreateGallery -> Galareya surat ya-da video gosmak ulanylar
 		api.POST("", controllers.CreateGallery)
 
-		// // UpdateProductByID -> id boyunca Product - in maglumatlaryny update etmek ucin ulanylyar
-		// api.PUT("", controllers.UpdateProductByID)
+		// UpdateGalleryByID -> id boyunca galereya maglumatlaryny update etmek ucin ulanylyar
+		api.PUT("", controllers.UpdateGalleryByID)
 
 		// // GetBrendBGetProductByIDyID -> id - si boyunca Product - in maglumatlaryny almak ucin ulanylyar
 		// api.GET(":id", controllers.GetProductByID)
