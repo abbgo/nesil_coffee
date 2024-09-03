@@ -18,9 +18,9 @@ func RecipeBackRoutes(back *gin.RouterGroup) {
 		// GetRecipeByID -> id - si boyunca Reseptin maglumatlaryny almak ucin ulanylyar
 		api.GET(":id", controllers.GetRecipeByID)
 
-		// GetProducts -> Ahli Product - laryn maglumatlaryny request query - den gelen
+		// GetRecipes -> Ahli Reseptelerin maglumatlaryny request query - den gelen
 		// limit we page boyunca pagination ulanyp almak ucin ulanylyar
-		api.GET("", controllers.GetProducts)
+		api.GET("", controllers.GetRecipes)
 
 		// DeleteProductByID -> id boyunca Product pozmak ucin ulanylyar
 		api.DELETE(":id", controllers.DeleteProductByID)
