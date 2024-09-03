@@ -83,84 +83,88 @@ func CreateProduct(c *gin.Context) {
 	})
 }
 
-// func UpdateProductByID(c *gin.Context) {
-// 	// initialize database connection
-// 	db, err := config.ConnDB()
-// 	if err != nil {
-// 		helpers.HandleError(c, 400, err.Error())
-// 		return
-// 	}
-// 	defer db.Close()
+func UpdateProductByID(c *gin.Context) {
+	// initialize database connection
+	db, err := config.ConnDB()
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer db.Close()
 
-// 	// request body - dan gelen maglumatlar alynyar
-// 	var product models.Product
-// 	if err := c.BindJSON(&product); err != nil {
-// 		helpers.HandleError(c, 400, err.Error())
-// 		return
-// 	}
+	// request body - dan gelen maglumatlar alynyar
+	var product models.Product
+	if err := c.BindJSON(&product); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
 
-// 	if err := models.ValidateUpdateProduct(product); err != nil {
-// 		helpers.HandleError(c, 400, err.Error())
-// 		return
-// 	}
+	if err := models.ValidateUpdateProduct(product); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
 
-// 	// database - daki maglumatlary request body - dan gelen maglumatlar bilen calysyas
-// 	_, err = db.Exec(context.Background(),
-// 		"UPDATE products SET name=$1 , description=$2 , category_id=$3 , slug=$4 WHERE id=$5",
-// 		product.Name, product.Description, product.CategoryID, slug.MakeLang(product.Name, "en"), product.ID,
-// 	)
-// 	if err != nil {
-// 		helpers.HandleError(c, 400, err.Error())
-// 		return
-// 	}
+	// database - daki maglumatlary request body - dan gelen maglumatlar bilen calysyas
+	_, err = db.Exec(context.Background(),
+		`UPDATE products SET name_tm=$1 , name_ru=$2 , name_en=$3 , description_tm=$4 , description_ru=$5 , description_en=$6 , 
+		category_id=$7 , slug_tm=$8 , slug_ru=$9 , slug_en=$10 WHERE id=$11`,
+		product.NameTM, product.NameRU, product.NameEN, product.DescriptionTM, product.DescriptionRU, product.DescriptionEN,
+		product.CategoryID, slug.MakeLang(product.NameTM, "en"), slug.MakeLang(product.NameRU, "en"), slug.MakeLang(product.NameEN, "en"),
+		product.ID,
+	)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
 
-// 	// harydyn maglumatlary uytgedilenson suratlary uytgedilyar
-// 	_, err = db.Exec(context.Background(), "DELETE FROM product_images WHERE product_id=$1", product.ID)
-// 	if err != nil {
-// 		helpers.HandleError(c, 400, err.Error())
-// 		return
-// 	}
+	// harydyn maglumatlary uytgedilenson suratlary uytgedilyar
+	_, err = db.Exec(context.Background(), "DELETE FROM product_images WHERE product_id=$1", product.ID)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
 
-// 	_, err = db.Exec(context.Background(), "INSERT INTO product_images (image,product_id) VALUES (unnest($1::VARCHAR[]),$2)",
-// 		pq.Array(product.Images), product.ID,
-// 	)
-// 	if err != nil {
-// 		helpers.HandleError(c, 400, err.Error())
-// 		return
-// 	}
+	_, err = db.Exec(context.Background(), "INSERT INTO product_images (image,product_id) VALUES (unnest($1::VARCHAR[]),$2)",
+		pq.Array(product.Images), product.ID,
+	)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
 
-// 	_, err = db.Exec(context.Background(), "DELETE FROM product_compositions WHERE product_id=$1", product.ID)
-// 	if err != nil {
-// 		helpers.HandleError(c, 400, err.Error())
-// 		return
-// 	}
+	_, err = db.Exec(context.Background(), "DELETE FROM product_compositions WHERE product_id=$1", product.ID)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
 
-// 	// eger harydyn duzumi girizilen bolsa ol hem db gosulyar
-// 	if len(product.Compositions) != 0 {
-// 		for _, composition := range product.Compositions {
-// 			_, err = db.Exec(context.Background(),
-// 				"INSERT INTO product_compositions (name,percentage,product_id) VALUES ($1,$2,$3)",
-// 				composition.Name, composition.Percentage, product.ID,
-// 			)
-// 			if err != nil {
-// 				helpers.HandleError(c, 400, err.Error())
-// 				return
-// 			}
-// 		}
-// 	}
+	// eger harydyn duzumi girizilen bolsa ol hem db gosulyar
+	if len(product.Compositions) != 0 {
+		for _, composition := range product.Compositions {
+			_, err = db.Exec(context.Background(),
+				"INSERT INTO product_compositions (name_tm,name_ru,name_en,percentage,product_id) VALUES ($1,$2,$3,$4,$5)",
+				composition.NameTM, composition.NameRU, composition.NameEN,
+				composition.Percentage, product.ID,
+			)
+			if err != nil {
+				helpers.HandleError(c, 400, err.Error())
+				return
+			}
+		}
+	}
 
-// 	// harydyn suratlary db gosulandan son helper_images tablisadan suratlar pozulyar
-// 	_, err = db.Exec(context.Background(), "DELETE FROM helper_images WHERE image = ANY($1::VARCHAR[])", product.Images)
-// 	if err != nil {
-// 		helpers.HandleError(c, 400, err.Error())
-// 		return
-// 	}
+	// harydyn suratlary db gosulandan son helper_images tablisadan suratlar pozulyar
+	_, err = db.Exec(context.Background(), "DELETE FROM helper_images WHERE image = ANY($1::VARCHAR[])", product.Images)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
 
-// 	c.JSON(http.StatusOK, gin.H{
-// 		"status":  true,
-// 		"message": "data successfully updated",
-// 	})
-// }
+	c.JSON(http.StatusOK, gin.H{
+		"status":  true,
+		"message": "data successfully updated",
+	})
+}
 
 // func GetProductByID(c *gin.Context) {
 // 	// initialize database connection

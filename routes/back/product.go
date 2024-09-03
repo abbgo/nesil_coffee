@@ -12,8 +12,8 @@ func ProductBackRoutes(back *gin.RouterGroup) {
 		// CreateProduct -> Product gosmak ulanylar
 		api.POST("", controllers.CreateProduct)
 
-		// // UpdateProductByID -> id boyunca Product - in maglumatlaryny update etmek ucin ulanylyar
-		// api.PUT("", controllers.UpdateProductByID)
+		// UpdateProductByID -> id boyunca Product - in maglumatlaryny update etmek ucin ulanylyar
+		api.PUT("", controllers.UpdateProductByID)
 
 		// // GetBrendBGetProductByIDyID -> id - si boyunca Product - in maglumatlaryny almak ucin ulanylyar
 		// api.GET(":id", controllers.GetProductByID)
