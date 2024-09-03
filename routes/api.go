@@ -1,6 +1,7 @@
 package routes
 
 import (
+	adminApi "nesil_coffe/routes/admin"
 	backApi "nesil_coffe/routes/back"
 
 	"github.com/gin-contrib/cors"
@@ -39,6 +40,12 @@ func Routes() *gin.Engine {
 
 		// bu route - ler back resepteler ucin doredilen rout - laryn toplumy
 		backApi.RecipeBackRoutes(back)
+	}
+
+	admin := routes.Group("/api")
+	{
+		// bu route - ler admin - ler ucin doredilen route - laryn toplumy
+		adminApi.AdminRoutes(admin)
 	}
 
 	return routes
