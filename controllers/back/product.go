@@ -177,8 +177,8 @@ func GetProductByID(c *gin.Context) {
 	// database - den request parametr - den gelen id boyunca maglumat cekilyar
 	var product models.Product
 	if err := db.QueryRow(context.Background(),
-		"SELECT id,name,description FROM products WHERE id = $1", productID).
-		Scan(&product.ID, &product.Name, &product.Description); err != nil {
+		"SELECT id,name,description,category_id FROM products WHERE id = $1", productID).
+		Scan(&product.ID, &product.Name, &product.Description, &product.CategoryID); err != nil {
 		helpers.HandleError(c, 400, err.Error())
 		return
 	}
@@ -204,6 +204,28 @@ func GetProductByID(c *gin.Context) {
 			return
 		}
 		product.Images = append(product.Images, image)
+	}
+
+	// harydyn duzumi alynyar
+	rowsComposition, err := db.Query(context.Background(),
+		"SELECT id,name,percentage FROM product_compositions WHERE product_id=$1", product.ID,
+	)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer rowsComposition.Close()
+
+	for rowsComposition.Next() {
+		var composition models.ProductComposition
+		if err := rowsComposition.Scan(&composition.ID, &composition.Name, &composition.Percentage); err != nil {
+			helpers.HandleError(c, 400, err.Error())
+			return
+		}
+
+		if composition.ID != "" {
+			product.Compositions = append(product.Compositions, composition)
+		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{
