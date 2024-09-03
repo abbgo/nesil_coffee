@@ -12,17 +12,17 @@ func ProductBackRoutes(back *gin.RouterGroup) {
 		// CreateProduct -> Product gosmak ulanylar
 		api.POST("", controllers.CreateProduct)
 
-		// UpdateProductByID -> id boyunca Product - in maglumatlaryny update etmek ucin ulanylyar
-		api.PUT("", controllers.UpdateProductByID)
+		// // UpdateProductByID -> id boyunca Product - in maglumatlaryny update etmek ucin ulanylyar
+		// api.PUT("", controllers.UpdateProductByID)
 
-		// GetBrendBGetProductByIDyID -> id - si boyunca Product - in maglumatlaryny almak ucin ulanylyar
-		api.GET(":id", controllers.GetProductByID)
+		// // GetBrendBGetProductByIDyID -> id - si boyunca Product - in maglumatlaryny almak ucin ulanylyar
+		// api.GET(":id", controllers.GetProductByID)
 
-		// GetProducts -> Ahli Product - laryn maglumatlaryny request query - den gelen
-		// limit we page boyunca pagination ulanyp almak ucin ulanylyar
-		api.GET("", controllers.GetProducts)
+		// // GetProducts -> Ahli Product - laryn maglumatlaryny request query - den gelen
+		// // limit we page boyunca pagination ulanyp almak ucin ulanylyar
+		// api.GET("", controllers.GetProducts)
 
-		// DeleteProductByID -> id boyunca Product pozmak ucin ulanylyar
-		api.DELETE(":id", controllers.DeleteProductByID)
+		// // DeleteProductByID -> id boyunca Product pozmak ucin ulanylyar
+		// api.DELETE(":id", controllers.DeleteProductByID)
 	}
 }
