@@ -44,6 +44,9 @@ func Routes() *gin.Engine {
 
 		// bu route - ler back slider ucin doredilen rout - laryn toplumy
 		backApi.SliderBackRoutes(back)
+
+		// bu route - ler back mailler ucin doredilen rout - laryn toplumy
+		backApi.MailBackRoutes(back)
 	}
 
 	admin := routes.Group("/api")
