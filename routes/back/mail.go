@@ -10,11 +10,9 @@ import (
 func MailBackRoutes(back *gin.RouterGroup) {
 	api := back.Group("/mails").Use(middlewares.CheckToken(true))
 	{
-		// GetGalleries -> Ahli gallery maglumatlaryny request query - den gelen
-		// limit we page boyunca pagination ulanyp almak ucin ulanylyar
-		api.GET("", controllers.GetGalleries)
+		api.GET("", controllers.GetMails)
 
-		// DeleteGalleryByID -> id boyunca Product pozmak ucin ulanylyar
-		api.DELETE(":id", controllers.DeleteGalleryByID)
+		// // DeleteGalleryByID -> id boyunca Product pozmak ucin ulanylyar
+		// api.DELETE(":id", controllers.DeleteGalleryByID)
 	}
 }
