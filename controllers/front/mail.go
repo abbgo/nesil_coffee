@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"nesil_coffe/config"
 	"nesil_coffe/helpers"
+	"nesil_coffe/models"
 	"net/http"
 	"net/smtp"
 	"os"
@@ -14,12 +15,6 @@ import (
 )
 
 var authh smtp.Auth
-
-type ForMail struct {
-	FullName string `json:"full_name" binding:"required,min=3"`
-	Email    string `json:"email" binding:"email"`
-	Letter   string `json:"letter" binding:"required,min=3"`
-}
 
 func SendMail(c *gin.Context) {
 	// initialize database connection
@@ -30,7 +25,7 @@ func SendMail(c *gin.Context) {
 	}
 	defer db.Close()
 
-	var mail ForMail
+	var mail models.ForMail
 	if err := c.BindJSON(&mail); err != nil {
 		helpers.HandleError(c, 400, err.Error())
 		return
