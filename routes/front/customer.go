@@ -16,6 +16,9 @@ func CustomerRoutes(back *gin.RouterGroup) {
 		// LoginCustomer Customer login etmek ucin ulanylyar.
 		api.POST("login", controllers.LoginCustomer)
 
+		// GetCustomer customerin maglumatlaryny almak ucin ulanylyar.
+		api.GET("one", middlewares.CheckToken(false), controllers.GetCustomer)
+
 		// UpdateCustomer customerin maglumatlaryny uytgetmek ucin ulanylyar.
 		api.PUT("update", middlewares.CheckToken(false), controllers.UpdateCustomer)
 	}

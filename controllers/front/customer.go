@@ -145,3 +145,39 @@ func UpdateCustomer(c *gin.Context) {
 		"message": "data successfully updated",
 	})
 }
+
+func GetCustomer(c *gin.Context) {
+	customerID, hasID := c.Get("id")
+	if !hasID {
+		helpers.HandleError(c, 400, "customer id is required")
+		return
+	}
+
+	var ok bool
+	customer_id, ok := customerID.(string)
+	if !ok {
+		helpers.HandleError(c, 400, "customer id must be string")
+		return
+	}
+
+	db, err := config.ConnDB()
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer db.Close()
+
+	var customer models.Customer
+	db.QueryRow(context.Background(), "SELECT id,login,mail FROM customers WHERE id = $1", customer_id).
+		Scan(&customer.ID, &customer.Login, &customer.Mail)
+	// eger request - den gelen telefon belgili admin database - de yok bolsa onda error response edilyar
+	if customer.ID == "" {
+		helpers.HandleError(c, 404, "customer not found")
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":   true,
+		"customer": customer,
+	})
+}
