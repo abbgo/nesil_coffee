@@ -57,7 +57,7 @@ func RegisterCustomer(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":       true,
-		"customer":     customer.Login,
+		"customer":     customer,
 		"access_token": accessTokenString,
 	})
 }
@@ -134,7 +134,7 @@ func UpdateCustomer(c *gin.Context) {
 
 	// eger customer database - de bar bolsa onda onun maglumatlary request body - dan gelen maglumatlar bilen update edilyar
 	_, err = db.Exec(context.Background(), "UPDATE customers SET login = $1 , mail = $2 , password = $3 WHERE id = $4",
-		customer.Login, hashPassword, customer.Mail, customer_id)
+		customer.Login, customer.Mail, hashPassword, customer_id)
 	if err != nil {
 		helpers.HandleError(c, 400, err.Error())
 		return
