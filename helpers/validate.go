@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"regexp"
 
 	"github.com/go-playground/validator"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -25,4 +26,9 @@ func ValidateStructData(s interface{}) error {
 		return err
 	}
 	return nil
+}
+
+func IsEmailValid(e string) bool {
+	emailRegex := regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
+	return emailRegex.MatchString(e)
 }

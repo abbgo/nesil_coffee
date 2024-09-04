@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"nesil_coffe/config"
+	"nesil_coffe/helpers"
 )
 
 type Customer struct {
@@ -13,15 +14,19 @@ type Customer struct {
 	Password string `json:"password" binding:"required"`
 }
 
-func ValidateRegisterCustomer(admin Admin) error {
+func ValidateRegisterCustomer(customer Customer) error {
 	db, err := config.ConnDB()
 	if err != nil {
 		return err
 	}
 	defer db.Close()
 
+	if !helpers.IsEmailValid(customer.Mail) {
+		return errors.New("invalid mail address")
+	}
+
 	var login string
-	db.QueryRow(context.Background(), "SELECT login FROM customers WHERE login = $1", admin.Login).Scan(&login)
+	db.QueryRow(context.Background(), "SELECT login FROM customers WHERE login = $1", customer.Login).Scan(&login)
 	if login != "" {
 		return errors.New("this customer already exists")
 	}
