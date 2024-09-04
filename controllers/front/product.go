@@ -18,7 +18,7 @@ func GetProducts(c *gin.Context) {
 	var requestQuery serializations.CategoryQuery
 	var count uint
 	var products []models.Product
-	var searchQuery, search, searchStr string
+	var searchQuery, search, searchStr, categoryQuery string
 
 	// initialize database connection
 	db, err := config.ConnDB()
@@ -52,8 +52,15 @@ func GetProducts(c *gin.Context) {
 		searchQuery = fmt.Sprintf(` WHERE (to_tsvector(slug_%s) @@ to_tsquery('%s') OR slug_%s LIKE '%s') `, requestQuery.Lang, search, requestQuery.Lang, searchStr)
 	}
 
+	if requestQuery.CategoryID != "" {
+		categoryQuery = fmt.Sprintf(` WHERE category_id='%s' `, requestQuery.CategoryID)
+		if requestQuery.Search != "" {
+			categoryQuery = fmt.Sprintf(` AND category_id='%s' `, requestQuery.CategoryID)
+		}
+	}
+
 	// database - den maglumatlaryn sany alynyar
-	queryCount := fmt.Sprintf(`SELECT COUNT(id) FROM products %s `, searchQuery)
+	queryCount := fmt.Sprintf(`SELECT COUNT(id) FROM products %s %s `, searchQuery, categoryQuery)
 	if err = db.QueryRow(context.Background(), queryCount).Scan(&count); err != nil {
 		helpers.HandleError(c, 400, err.Error())
 		return
@@ -62,8 +69,8 @@ func GetProducts(c *gin.Context) {
 	// database maglumatlar alynyar
 	queryProducts := fmt.Sprintf(
 		`SELECT id,name_tm,name_ru,name_en,description_tm,description_ru,description_en,category_id FROM products 
-		%s ORDER BY created_at DESC LIMIT %d OFFSET %d`,
-		searchQuery, requestQuery.Limit, offset)
+		%s %s ORDER BY created_at DESC LIMIT %d OFFSET %d`,
+		searchQuery, categoryQuery, requestQuery.Limit, offset)
 	rowsProduct, err := db.Query(context.Background(), queryProducts)
 	if err != nil {
 		helpers.HandleError(c, 400, err.Error())
