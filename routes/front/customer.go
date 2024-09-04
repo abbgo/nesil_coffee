@@ -2,6 +2,7 @@ package frontApi
 
 import (
 	controllers "nesil_coffe/controllers/front"
+	"nesil_coffe/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,7 +16,7 @@ func CustomerRoutes(back *gin.RouterGroup) {
 		// LoginCustomer Customer login etmek ucin ulanylyar.
 		api.POST("login", controllers.LoginCustomer)
 
-		// // UpdateAdmin admin - in maglumatlaryny uytgetmek ucin ulanylyar.
-		// api.PUT("update", middlewares.CheckAdmin(), controllers.UpdateAdmin)
+		// UpdateCustomer customerin maglumatlaryny uytgetmek ucin ulanylyar.
+		api.PUT("update", middlewares.CheckToken(false), controllers.UpdateCustomer)
 	}
 }

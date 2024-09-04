@@ -9,9 +9,9 @@ import (
 
 type Customer struct {
 	ID       string `json:"id,omitempty"`
-	Login    string `json:"login" binding:"required"`
-	Mail     string `json:"mail" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	Login    string `json:"login,omitempty" binding:"required"`
+	Mail     string `json:"mail,omitempty" binding:"required"`
+	Password string `json:"password,omitempty" binding:"required"`
 }
 
 type LoginCustomer struct {
@@ -39,25 +39,28 @@ func ValidateRegisterCustomer(customer Customer) error {
 	return nil
 }
 
-func ValidateLoginCustomer(customer LoginCustomer) (string, error) {
+func ValidateLoginCustomer(customer LoginCustomer) (Customer, error) {
 	db, err := config.ConnDB()
 	if err != nil {
-		return "", err
+		return Customer{}, err
 	}
 	defer db.Close()
 
-	var id, password string
-	db.QueryRow(context.Background(), "SELECT id,password FROM customers WHERE login = $1", customer.Login).Scan(&id, &password)
+	var returnCustomer Customer
+	db.QueryRow(context.Background(), "SELECT id,login,mail,password FROM customers WHERE login = $1", customer.Login).
+		Scan(&returnCustomer.ID, &returnCustomer.Login, &returnCustomer.Mail, &returnCustomer.Password)
 	// eger request - den gelen telefon belgili admin database - de yok bolsa onda error response edilyar
-	if id == "" {
-		return "", errors.New("customer not found")
+	if returnCustomer.ID == "" {
+		return Customer{}, errors.New("customer not found")
 	}
 
 	// eger admin bar bolsa onda paroly dogry yazypdyrmy yazmandyrmy sol barlanyar
-	credentialError := helpers.CheckPassword(customer.Password, password)
+	credentialError := helpers.CheckPassword(customer.Password, returnCustomer.Password)
 	if credentialError != nil {
-		return "", errors.New("invalid credentials")
+		return Customer{}, errors.New("invalid credentials")
 	}
 
-	return id, nil
+	returnCustomer.Password = ""
+
+	return returnCustomer, nil
 }
