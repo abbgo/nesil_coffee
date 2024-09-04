@@ -2,7 +2,9 @@ package controllers
 
 import (
 	"bytes"
+	"context"
 	"html/template"
+	"nesil_coffe/config"
 	"nesil_coffe/helpers"
 	"net/http"
 	"net/smtp"
@@ -20,6 +22,14 @@ type ForMail struct {
 }
 
 func SendMail(c *gin.Context) {
+	// initialize database connection
+	db, err := config.ConnDB()
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer db.Close()
+
 	var mail ForMail
 	if err := c.BindJSON(&mail); err != nil {
 		helpers.HandleError(c, 400, err.Error())
@@ -52,6 +62,13 @@ func SendMail(c *gin.Context) {
 			return
 		}
 	} else {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	_, err = db.Exec(context.Background(), `INSERT INTO mails (full_name,mail,letter) VALUES ($1,$2,$3)`,
+		mail.FullName, mail.Email, mail.Letter)
+	if err != nil {
 		helpers.HandleError(c, 400, err.Error())
 		return
 	}
