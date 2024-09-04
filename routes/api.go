@@ -59,6 +59,9 @@ func Routes() *gin.Engine {
 
 		// bu route - ler kategoriyalar ucin doredilen route - laryn toplumy
 		frontApi.CategoryFrontRoutes(front)
+
+		// bu route - ler gallery ucin doredilen route - laryn toplumy
+		frontApi.GalleryFrontRoutes(front)
 	}
 
 	return routes
