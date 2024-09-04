@@ -2,12 +2,13 @@ package back
 
 import (
 	controllers "nesil_coffe/controllers/back"
+	"nesil_coffe/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
 
 func CategoryBackRoutes(back *gin.RouterGroup) {
-	api := back.Group("/categories")
+	api := back.Group("/categories").Use(middlewares.CheckToken(true))
 	{
 		// CreateCategory -> Category gosmak ulanylar
 		api.POST("", controllers.CreateCategory)

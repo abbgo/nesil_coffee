@@ -2,12 +2,13 @@ package back
 
 import (
 	controllers "nesil_coffe/controllers/back"
+	"nesil_coffe/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
 
 func GalleryBackRoutes(back *gin.RouterGroup) {
-	api := back.Group("/galleries")
+	api := back.Group("/galleries").Use(middlewares.CheckToken(true))
 	{
 		// CreateGallery -> Galareya surat ya-da video gosmak ulanylar
 		api.POST("", controllers.CreateGallery)

@@ -2,12 +2,13 @@ package back
 
 import (
 	controllers "nesil_coffe/controllers/back"
+	"nesil_coffe/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
 
 func ProductBackRoutes(back *gin.RouterGroup) {
-	api := back.Group("/products")
+	api := back.Group("/products").Use(middlewares.CheckToken(true))
 	{
 		// CreateProduct -> Product gosmak ulanylar
 		api.POST("", controllers.CreateProduct)
