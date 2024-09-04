@@ -248,7 +248,6 @@ func GetProducts(c *gin.Context) {
 	var requestQuery serializations.CategoryQuery
 	var count uint
 	var products []models.Product
-	deletedAt := `IS NULL`
 	var searchQuery, search, searchStr string
 
 	// initialize database connection
@@ -273,10 +272,6 @@ func GetProducts(c *gin.Context) {
 	// limit we page boyunca offset hasaplanyar
 	offset := requestQuery.Limit * (requestQuery.Page - 1)
 
-	if requestQuery.IsDeleted {
-		deletedAt = `IS NOT NULL`
-	}
-
 	if requestQuery.Search != "" {
 		incomingsSarch := slug.MakeLang(c.Query("search"), "en")
 		search = strings.ReplaceAll(incomingsSarch, "-", " | ")
@@ -288,7 +283,7 @@ func GetProducts(c *gin.Context) {
 	}
 
 	// database - den maglumatlaryn sany alynyar
-	queryCount := fmt.Sprintf(`SELECT COUNT(id) FROM products WHERE deleted_at %s %s`, deletedAt, searchQuery)
+	queryCount := fmt.Sprintf(`SELECT COUNT(id) FROM products %s`, searchQuery)
 	if err = db.QueryRow(context.Background(), queryCount).Scan(&count); err != nil {
 		helpers.HandleError(c, 400, err.Error())
 		return
@@ -297,8 +292,8 @@ func GetProducts(c *gin.Context) {
 	// database maglumatlar alynyar
 	queryProducts := fmt.Sprintf(
 		`SELECT id,name_tm,name_ru,name_en,description_tm,description_ru,description_en,category_id FROM products 
-		WHERE deleted_at %s %s ORDER BY created_at DESC LIMIT %d OFFSET %d`,
-		deletedAt, searchQuery, requestQuery.Limit, offset)
+		%s ORDER BY created_at DESC LIMIT %d OFFSET %d`,
+		searchQuery, requestQuery.Limit, offset)
 	rowsProduct, err := db.Query(context.Background(), queryProducts)
 	if err != nil {
 		helpers.HandleError(c, 400, err.Error())
