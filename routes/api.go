@@ -68,6 +68,9 @@ func Routes() *gin.Engine {
 
 		// bu route - ler gallery ucin doredilen route - laryn toplumy
 		frontApi.RecipeFrontRoutes(front)
+
+		// bu route - ler slider ucin doredilen route - laryn toplumy
+		frontApi.SliderFrontRoutes(front)
 	}
 
 	return routes
