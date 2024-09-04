@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"nesil_coffe/config"
 	"nesil_coffe/helpers"
 	"nesil_coffe/models"
@@ -131,7 +130,6 @@ func GetGalleries(c *gin.Context) {
 	var requestQuery helpers.StandartQuery
 	var count uint
 	var galleries []models.Gallery
-	deletedAt := `IS NULL`
 
 	// initialize database connection
 	db, err := config.ConnDB()
@@ -155,22 +153,16 @@ func GetGalleries(c *gin.Context) {
 	// limit we page boyunca offset hasaplanyar
 	offset := requestQuery.Limit * (requestQuery.Page - 1)
 
-	if requestQuery.IsDeleted {
-		deletedAt = `IS NOT NULL`
-	}
-
 	// database - den maglumatlaryn sany alynyar
-	queryCount := fmt.Sprintf(`SELECT COUNT(id) FROM galleries WHERE deleted_at %s`, deletedAt)
-	if err = db.QueryRow(context.Background(), queryCount).Scan(&count); err != nil {
+	if err = db.QueryRow(context.Background(), `SELECT COUNT(id) FROM galleries`).Scan(&count); err != nil {
 		helpers.HandleError(c, 400, err.Error())
 		return
 	}
 
 	// database maglumatlar alynyar
-	queryGalleries := fmt.Sprintf(
-		`SELECT id,media,media_type FROM galleries WHERE deleted_at %s ORDER BY created_at DESC LIMIT %d OFFSET %d`,
-		deletedAt, requestQuery.Limit, offset)
-	rowsGallery, err := db.Query(context.Background(), queryGalleries)
+	rowsGallery, err := db.Query(context.Background(),
+		`SELECT id,media,media_type FROM galleries ORDER BY created_at DESC LIMIT $1 OFFSET $2`,
+		requestQuery.Limit, offset)
 	if err != nil {
 		helpers.HandleError(c, 400, err.Error())
 		return
