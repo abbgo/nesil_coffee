@@ -6,6 +6,7 @@ import (
 	"nesil_coffe/helpers"
 	"nesil_coffe/models"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -199,39 +200,39 @@ func GetSliders(c *gin.Context) {
 	})
 }
 
-// func DeleteRecipeByID(c *gin.Context) {
-// 	// initialize database connection
-// 	db, err := config.ConnDB()
-// 	if err != nil {
-// 		helpers.HandleError(c, 400, err.Error())
-// 		return
-// 	}
-// 	defer db.Close()
+func DeleteSliderByID(c *gin.Context) {
+	// initialize database connection
+	db, err := config.ConnDB()
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer db.Close()
 
-// 	// request parametr - den id alynyar
-// 	ID := c.Param("id")
-// 	var recipe models.Recipe
-// 	db.QueryRow(context.Background(), "SELECT id,image FROM recipes WHERE id=$1", ID).Scan(&recipe.ID, &recipe.Image)
-// 	if recipe.ID == "" {
-// 		helpers.HandleError(c, 404, "record not found")
-// 		return
-// 	}
+	// request parametr - den id alynyar
+	ID := c.Param("id")
+	var slider models.Slider
+	db.QueryRow(context.Background(), "SELECT id,image FROM sliders WHERE id=$1", ID).Scan(&slider.ID, &slider.Image)
+	if slider.ID == "" {
+		helpers.HandleError(c, 404, "record not found")
+		return
+	}
 
-// 	// local path - dan surat pozulyar
-// 	if err := os.Remove(helpers.ServerPath + recipe.Image); err != nil {
-// 		helpers.HandleError(c, 400, err.Error())
-// 		return
-// 	}
+	// local path - dan surat pozulyar
+	if err := os.Remove(helpers.ServerPath + slider.Image); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
 
-// 	// category - nyn suraty pozulandan son category we onun bilen baglanysykly maglumatlar pozulyar
-// 	_, err = db.Exec(context.Background(), "DELETE FROM recipes WHERE id = $1", ID)
-// 	if err != nil {
-// 		helpers.HandleError(c, 400, err.Error())
-// 		return
-// 	}
+	// category - nyn suraty pozulandan son category we onun bilen baglanysykly maglumatlar pozulyar
+	_, err = db.Exec(context.Background(), "DELETE FROM sliders WHERE id = $1", ID)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
 
-// 	c.JSON(http.StatusOK, gin.H{
-// 		"status":  true,
-// 		"message": "data successfully deleted",
-// 	})
-// }
+	c.JSON(http.StatusOK, gin.H{
+		"status":  true,
+		"message": "data successfully deleted",
+	})
+}

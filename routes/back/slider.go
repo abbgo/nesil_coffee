@@ -23,7 +23,7 @@ func SliderBackRoutes(back *gin.RouterGroup) {
 		// limit we page boyunca pagination ulanyp almak ucin ulanylyar
 		api.GET("", controllers.GetSliders)
 
-		// // DeleteCategoryByID -> id boyunca category pozmak ucin ulanylyar
-		// api.DELETE(":id", controllers.DeleteCategoryByID)
+		// DeleteSliderByID -> id boyunca Slider pozmak ucin ulanylyar
+		api.DELETE(":id", controllers.DeleteSliderByID)
 	}
 }
