@@ -3,6 +3,7 @@ package routes
 import (
 	adminApi "nesil_coffe/routes/admin"
 	backApi "nesil_coffe/routes/back"
+	frontApi "nesil_coffe/routes/front"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/gzip"
@@ -46,6 +47,12 @@ func Routes() *gin.Engine {
 	{
 		// bu route - ler admin - ler ucin doredilen route - laryn toplumy
 		adminApi.AdminRoutes(admin)
+	}
+
+	front := routes.Group("/api")
+	{
+		// bu route - ler klient - ler ucin doredilen route - laryn toplumy
+		frontApi.CustomerRoutes(front)
 	}
 
 	return routes
