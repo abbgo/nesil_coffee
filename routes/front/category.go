@@ -1,6 +1,7 @@
 package frontApi
 
 import (
+	controllers "nesil_coffe/controllers/front"
 	"nesil_coffe/middlewares"
 
 	"github.com/gin-gonic/gin"
@@ -11,6 +12,6 @@ func CategoryFrontRoutes(front *gin.RouterGroup) {
 	{
 		// GetCategories -> Ahli Category - leryn maglumatlaryny request query - den gelen
 		// limit we page boyunca pagination ulanyp almak ucin ulanylyar
-		// api.GET("", controllers.GetCategories)
+		api.GET("", controllers.GetCategories)
 	}
 }
