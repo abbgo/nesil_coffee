@@ -7,8 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CustomerRoutes(back *gin.RouterGroup) {
-	api := back.Group("/customers")
+func CustomerRoutes(front *gin.RouterGroup) {
+	api := front.Group("/customers")
 	{
 		// RegisterCustomer ->  Customer registrasiya etmek ucin ulanylyar.
 		api.POST("register", controllers.RegisterCustomer)

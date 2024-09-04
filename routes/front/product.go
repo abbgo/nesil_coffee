@@ -6,8 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ProductFrontRoutes(back *gin.RouterGroup) {
-	api := back.Group("/products")
+func ProductFrontRoutes(front *gin.RouterGroup) {
+	api := front.Group("/products")
 	{
 		// GetProductByID -> id - si boyunca Product - in maglumatlaryny almak ucin ulanylyar
 		api.GET(":id", controllers.GetProductByID)
