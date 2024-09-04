@@ -71,6 +71,9 @@ func Routes() *gin.Engine {
 
 		// bu route - ler slider ucin doredilen route - laryn toplumy
 		frontApi.SliderFrontRoutes(front)
+
+		// bu route - ler mail ucin doredilen route - laryn toplumy
+		frontApi.MailFrontRoutes(front)
 	}
 
 	return routes
