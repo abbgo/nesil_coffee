@@ -9,11 +9,11 @@ import (
 func CustomerRoutes(back *gin.RouterGroup) {
 	api := back.Group("/customers")
 	{
-		// RegisterAdmin admin - i registrasiya etmek ucin ulanylyar.
+		// RegisterCustomer ->  Customer registrasiya etmek ucin ulanylyar.
 		api.POST("register", controllers.RegisterCustomer)
 
-		// // LoginAdmin admin - i login etmek ucin ulanylyar.
-		// api.POST("login", controllers.LoginAdmin)
+		// LoginCustomer Customer login etmek ucin ulanylyar.
+		api.POST("login", controllers.LoginCustomer)
 
 		// // UpdateAdmin admin - in maglumatlaryny uytgetmek ucin ulanylyar.
 		// api.PUT("update", middlewares.CheckAdmin(), controllers.UpdateAdmin)

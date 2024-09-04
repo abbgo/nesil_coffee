@@ -61,3 +61,38 @@ func RegisterCustomer(c *gin.Context) {
 		"access_token": accessTokenString,
 	})
 }
+
+func LoginCustomer(c *gin.Context) {
+	db, err := config.ConnDB()
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer db.Close()
+
+	// request - den maglumatlar alynyar
+	var customer models.LoginCustomer
+	if err := c.BindJSON(&customer); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	id, err := models.ValidateLoginCustomer(customer)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	// maglumatlar dogry bolsa auth ucin access_toke bilen resfresh_token generate edilyar
+	accessTokenString, err := helpers.GenerateAccessToken(customer.Login, id)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"access_token": accessTokenString,
+		"customer":     customer,
+		"status":       true,
+	})
+}
