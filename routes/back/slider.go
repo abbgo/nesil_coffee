@@ -13,8 +13,8 @@ func SliderBackRoutes(back *gin.RouterGroup) {
 		// CreateSlider -> Slider gosmak ulanylar
 		api.POST("", controllers.CreateSlider)
 
-		// // UpdateCategoryByID -> id boyunca Category - in maglumatlaryny update etmek ucin ulanylyar
-		// api.PUT("", controllers.UpdateCategoryByID)
+		// UpdateSliderByID -> id boyunca Sliderin maglumatlaryny update etmek ucin ulanylyar
+		api.PUT("", controllers.UpdateSliderByID)
 
 		// // GetCategoryByID -> id - si boyunca Category - in maglumatlaryny almak ucin ulanylyar
 		// api.GET(":id", controllers.GetCategoryByID)
