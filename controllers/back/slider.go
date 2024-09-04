@@ -171,7 +171,6 @@ func GetSliders(c *gin.Context) {
 	}
 
 	// database maglumatlar alynyar
-
 	rowsRecipe, err := db.Query(context.Background(),
 		`SELECT id,title_tm,title_ru,title_en,sub_title_tm,sub_title_ru,sub_title_en,description_tm,description_ru,description_en,image 
 	 FROM sliders ORDER BY created_at DESC LIMIT $1 OFFSET $2`, requestQuery.Limit, offset)

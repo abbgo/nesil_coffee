@@ -61,7 +61,7 @@ func SendMail(c *gin.Context) {
 		return
 	}
 
-	_, err = db.Exec(context.Background(), `INSERT INTO mails (full_name,mail,letter) VALUES ($1,$2,$3)`,
+	_, err = db.Exec(context.Background(), `INSERT INTO mails (full_name,email,letter) VALUES ($1,$2,$3)`,
 		mail.FullName, mail.Email, mail.Letter)
 	if err != nil {
 		helpers.HandleError(c, 400, err.Error())
