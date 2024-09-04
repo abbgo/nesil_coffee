@@ -19,9 +19,9 @@ func SliderBackRoutes(back *gin.RouterGroup) {
 		// GetSliderByID -> id - si boyunca Sliderin maglumatlaryny almak ucin ulanylyar
 		api.GET(":id", controllers.GetSliderByID)
 
-		// // GetCategories -> Ahli Category - leryn maglumatlaryny request query - den gelen
-		// // limit we page boyunca pagination ulanyp almak ucin ulanylyar
-		// api.GET("", controllers.GetCategories)
+		// GetSliders -> Ahli Sliderlaryn maglumatlaryny request query - den gelen
+		// limit we page boyunca pagination ulanyp almak ucin ulanylyar
+		api.GET("", controllers.GetSliders)
 
 		// // DeleteCategoryByID -> id boyunca category pozmak ucin ulanylyar
 		// api.DELETE(":id", controllers.DeleteCategoryByID)

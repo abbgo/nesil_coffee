@@ -136,103 +136,68 @@ func GetSliderByID(c *gin.Context) {
 	})
 }
 
-// func GetRecipes(c *gin.Context) {
-// 	var requestQuery serializations.CategoryQuery
-// 	var count uint
-// 	var recipes []models.Recipe
-// 	var searchQuery, search, searchStr string
+func GetSliders(c *gin.Context) {
+	var requestQuery helpers.StandartQuery
+	var count uint
+	var sliders []models.Slider
 
-// 	// initialize database connection
-// 	db, err := config.ConnDB()
-// 	if err != nil {
-// 		helpers.HandleError(c, 400, err.Error())
-// 		return
-// 	}
-// 	defer db.Close()
+	// initialize database connection
+	db, err := config.ConnDB()
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer db.Close()
 
-// 	// request query - den maglumatlar bind edilyar
-// 	if err := c.Bind(&requestQuery); err != nil {
-// 		helpers.HandleError(c, 400, err.Error())
-// 		return
-// 	}
-// 	// request query - den maglumatlar validate edilyar
-// 	if err := helpers.ValidateStructData(&requestQuery); err != nil {
-// 		helpers.HandleError(c, 400, err.Error())
-// 		return
-// 	}
+	// request query - den maglumatlar bind edilyar
+	if err := c.Bind(&requestQuery); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	// request query - den maglumatlar validate edilyar
+	if err := helpers.ValidateStructData(&requestQuery); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
 
-// 	// limit we page boyunca offset hasaplanyar
-// 	offset := requestQuery.Limit * (requestQuery.Page - 1)
+	// limit we page boyunca offset hasaplanyar
+	offset := requestQuery.Limit * (requestQuery.Page - 1)
 
-// 	if requestQuery.Search != "" {
-// 		incomingsSarch := slug.MakeLang(c.Query("search"), "en")
-// 		search = strings.ReplaceAll(incomingsSarch, "-", " | ")
-// 		searchStr = fmt.Sprintf("%%%s%%", search)
-// 	}
+	// database - den maglumatlaryn sany alynyar
+	if err = db.QueryRow(context.Background(), `SELECT COUNT(id) FROM sliders`).Scan(&count); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
 
-// 	if requestQuery.Search != "" {
-// 		searchQuery = fmt.Sprintf(` WHERE (to_tsvector(slug_%s) @@ to_tsquery('%s') OR slug_%s LIKE '%s') `, requestQuery.Lang, search, requestQuery.Lang, searchStr)
-// 	}
+	// database maglumatlar alynyar
 
-// 	// database - den maglumatlaryn sany alynyar
-// 	queryCount := fmt.Sprintf(`SELECT COUNT(id) FROM recipes %s`, searchQuery)
-// 	if err = db.QueryRow(context.Background(), queryCount).Scan(&count); err != nil {
-// 		helpers.HandleError(c, 400, err.Error())
-// 		return
-// 	}
+	rowsRecipe, err := db.Query(context.Background(),
+		`SELECT id,title_tm,title_ru,title_en,sub_title_tm,sub_title_ru,sub_title_en,description_tm,description_ru,description_en,image 
+	 FROM sliders ORDER BY created_at DESC LIMIT $1 OFFSET $2`, requestQuery.Limit, offset)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer rowsRecipe.Close()
 
-// 	// database maglumatlar alynyar
-// 	queryRecipes := fmt.Sprintf(
-// 		`SELECT id,name_tm,name_ru,name_en,description_tm,description_ru,description_en,image FROM recipes
-// 			%s ORDER BY created_at DESC LIMIT %d OFFSET %d`,
-// 		searchQuery, requestQuery.Limit, offset)
-// 	rowsRecipe, err := db.Query(context.Background(), queryRecipes)
-// 	if err != nil {
-// 		helpers.HandleError(c, 400, err.Error())
-// 		return
-// 	}
-// 	defer rowsRecipe.Close()
+	for rowsRecipe.Next() {
+		var slider models.Slider
+		if err := rowsRecipe.Scan(&slider.ID, &slider.TitleTM, &slider.TitleRU, &slider.TitleEN,
+			&slider.SubTitleTM, &slider.SubTitleRU, &slider.SubTitleEN,
+			&slider.DescriptionTM, &slider.DescriptionRU, &slider.DescriptionEN, &slider.Image); err != nil {
+			helpers.HandleError(c, 400, err.Error())
+			return
+		}
 
-// 	for rowsRecipe.Next() {
-// 		var recipe models.Recipe
-// 		if err := rowsRecipe.Scan(&recipe.ID, &recipe.NameTM, &recipe.NameRU,
-// 			&recipe.NameEN, &recipe.DescriptionTM, &recipe.DescriptionRU, &recipe.DescriptionEN, &recipe.Image); err != nil {
-// 			helpers.HandleError(c, 400, err.Error())
-// 			return
-// 		}
+		sliders = append(sliders, slider)
+	}
 
-// 		// harydyn duzumi alynyar
-// 		rowsComposition, err := db.Query(context.Background(),
-// 			"SELECT id,name_tm,name_ru,name_en,percentage FROM product_compositions WHERE recipe_id=$1", recipe.ID,
-// 		)
-// 		if err != nil {
-// 			helpers.HandleError(c, 400, err.Error())
-// 			return
-// 		}
-// 		defer rowsComposition.Close()
-
-// 		for rowsComposition.Next() {
-// 			var composition models.ProductComposition
-// 			if err := rowsComposition.Scan(&composition.ID,
-// 				&composition.NameTM, &composition.NameRU, &composition.NameEN, &composition.Percentage); err != nil {
-// 				helpers.HandleError(c, 400, err.Error())
-// 				return
-// 			}
-
-// 			if composition.ID != "" {
-// 				recipe.Compositions = append(recipe.Compositions, composition)
-// 			}
-// 		}
-
-// 		recipes = append(recipes, recipe)
-// 	}
-
-// 	c.JSON(http.StatusOK, gin.H{
-// 		"status":  true,
-// 		"recipes": recipes,
-// 		"count":   count,
-// 	})
-// }
+	c.JSON(http.StatusOK, gin.H{
+		"status":  true,
+		"sliders": sliders,
+		"count":   count,
+	})
+}
 
 // func DeleteRecipeByID(c *gin.Context) {
 // 	// initialize database connection
