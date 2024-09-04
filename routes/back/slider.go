@@ -10,8 +10,8 @@ import (
 func SliderBackRoutes(back *gin.RouterGroup) {
 	api := back.Group("/sliders").Use(middlewares.CheckToken(true))
 	{
-		// CreateCategory -> Category gosmak ulanylar
-		api.POST("", controllers.CreateCategory)
+		// CreateSlider -> Slider gosmak ulanylar
+		api.POST("", controllers.CreateSlider)
 
 		// // UpdateCategoryByID -> id boyunca Category - in maglumatlaryny update etmek ucin ulanylyar
 		// api.PUT("", controllers.UpdateCategoryByID)
