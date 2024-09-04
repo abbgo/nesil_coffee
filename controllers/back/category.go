@@ -127,7 +127,6 @@ func GetCategories(c *gin.Context) {
 	var requestQuery serializations.CategoryQuery
 	var count uint
 	var categories []models.Category
-	deletedAt := `IS NULL`
 	var searchQuery, search, searchStr string
 
 	// initialize database connection
@@ -152,10 +151,6 @@ func GetCategories(c *gin.Context) {
 	// limit we page boyunca offset hasaplanyar
 	offset := requestQuery.Limit * (requestQuery.Page - 1)
 
-	if requestQuery.IsDeleted {
-		deletedAt = `IS NOT NULL`
-	}
-
 	if requestQuery.Search != "" {
 		incomingsSarch := slug.MakeLang(c.Query("search"), "en")
 		search = strings.ReplaceAll(incomingsSarch, "-", " | ")
@@ -163,11 +158,11 @@ func GetCategories(c *gin.Context) {
 	}
 
 	if requestQuery.Search != "" {
-		searchQuery = fmt.Sprintf(` AND (to_tsvector(slug_%s) @@ to_tsquery('%s') OR slug_%s LIKE '%s') `, requestQuery.Lang, search, requestQuery.Lang, searchStr)
+		searchQuery = fmt.Sprintf(` WHERE (to_tsvector(slug_%s) @@ to_tsquery('%s') OR slug_%s LIKE '%s') `, requestQuery.Lang, search, requestQuery.Lang, searchStr)
 	}
 
 	// database - den maglumatlaryn sany alynyar
-	queryCount := fmt.Sprintf(`SELECT COUNT(id) FROM categories WHERE deleted_at %s %s`, deletedAt, searchQuery)
+	queryCount := fmt.Sprintf(`SELECT COUNT(id) FROM categories %s`, searchQuery)
 	if err = db.QueryRow(context.Background(), queryCount).Scan(&count); err != nil {
 		helpers.HandleError(c, 400, err.Error())
 		return
@@ -175,8 +170,8 @@ func GetCategories(c *gin.Context) {
 
 	// database maglumatlar alynyar
 	queryCategories := fmt.Sprintf(
-		`SELECT id,name_tm,name_ru,name_en FROM categories WHERE deleted_at %s %s ORDER BY created_at DESC LIMIT %d OFFSET %d`,
-		deletedAt, searchQuery, requestQuery.Limit, offset)
+		`SELECT id,name_tm,name_ru,name_en FROM categories %s ORDER BY created_at DESC LIMIT %d OFFSET %d`,
+		searchQuery, requestQuery.Limit, offset)
 	rowsCategory, err := db.Query(context.Background(), queryCategories)
 	if err != nil {
 		helpers.HandleError(c, 400, err.Error())
