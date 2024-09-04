@@ -44,7 +44,7 @@ func SendMail(c *gin.Context) {
 		Mail:    mail.Email,
 		Message: mail.Letter,
 	}
-	r := NewRequest(to, "Salam. Men "+templateData.Name, "Salam Isleg Market!")
+	r := NewRequest(to, "Salam. Men "+templateData.Name, "Salam Nesil Coffee !")
 	if err := r.ParseTemplate(serverPath+"templates/template.html", templateData); err == nil {
 		_, err := r.SendEmail()
 		if err != nil {
