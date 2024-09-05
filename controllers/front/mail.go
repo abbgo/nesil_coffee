@@ -61,8 +61,15 @@ func SendMail(c *gin.Context) {
 		return
 	}
 
-	_, err = db.Exec(context.Background(), `INSERT INTO mails (full_name,email,letter) VALUES ($1,$2,$3)`,
-		mail.FullName, mail.Email, mail.Letter)
+	var productID interface{}
+	if mail.ProductID == "" {
+		productID = nil
+	} else {
+		productID = mail.ProductID
+	}
+
+	_, err = db.Exec(context.Background(), `INSERT INTO mails (full_name,email,letter,product_id) VALUES ($1,$2,$3,$4)`,
+		mail.FullName, mail.Email, mail.Letter, productID)
 	if err != nil {
 		helpers.HandleError(c, 400, err.Error())
 		return
@@ -72,7 +79,6 @@ func SendMail(c *gin.Context) {
 		"status":  true,
 		"message": "mail successfully send",
 	})
-
 }
 
 // Request struct
