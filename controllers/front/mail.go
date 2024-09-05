@@ -62,7 +62,7 @@ func SendMail(c *gin.Context) {
 	}
 
 	var productID interface{}
-	if mail.ProductID == "" {
+	if mail.ProductID.String == "" {
 		productID = nil
 	} else {
 		productID = mail.ProductID
