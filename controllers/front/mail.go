@@ -40,17 +40,56 @@ func SendMail(c *gin.Context) {
 	var serverPath = os.Getenv("SERVER_PATH")
 
 	authh = smtp.PlainAuth("", from, password, host)
+
 	templateData := struct {
-		Name    string
-		Mail    string
-		Message string
+		Name         string
+		Mail         string
+		Message      string
+		ProductName  string
+		ProductImage string
 	}{
-		Name:    mail.FullName,
-		Mail:    mail.Email,
-		Message: mail.Letter,
+		Name:         mail.FullName,
+		Mail:         mail.Email,
+		Message:      mail.Letter,
+		ProductName:  "",
+		ProductImage: "",
 	}
+
+	parsedTemplate := "templates/template.html"
+
+	if mail.ProductID.String != "" {
+		var productName, productImage string
+		if err := db.QueryRow(context.Background(), `SELECT name_tm FROM products WHERE id=$1`, mail.ProductID).
+			Scan(&productName); err != nil {
+			helpers.HandleError(c, 400, err.Error())
+			return
+		}
+
+		if err := db.QueryRow(context.Background(), `SELECT image FROM product_images WHERE product_id=$1 LIMIT 1`, mail.ProductID).
+			Scan(&productImage); err != nil {
+			helpers.HandleError(c, 400, err.Error())
+			return
+		}
+
+		templateData = struct {
+			Name         string
+			Mail         string
+			Message      string
+			ProductName  string
+			ProductImage string
+		}{
+			Name:         mail.FullName,
+			Mail:         mail.Email,
+			Message:      mail.Letter,
+			ProductName:  productName,
+			ProductImage: productImage,
+		}
+
+		parsedTemplate = "templates/template_product.html"
+	}
+
 	r := NewRequest(to, "Salam. Men "+templateData.Name, "Salam Nesil Coffee !")
-	if err := r.ParseTemplate(serverPath+"templates/template.html", templateData); err == nil {
+	if err := r.ParseTemplate(serverPath+parsedTemplate, templateData); err == nil {
 		_, err := r.SendEmail()
 		if err != nil {
 			helpers.HandleError(c, 400, err.Error())
