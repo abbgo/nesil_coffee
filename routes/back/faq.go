@@ -19,9 +19,9 @@ func FAQBackRoutes(back *gin.RouterGroup) {
 		// GetFAQByID -> id - si boyunca FAQ - nin maglumatlaryny almak ucin ulanylyar
 		api.GET(":id", controllers.GetFAQByID)
 
-		// // GetSliders -> Ahli Sliderlaryn maglumatlaryny request query - den gelen
-		// // limit we page boyunca pagination ulanyp almak ucin ulanylyar
-		// api.GET("", controllers.GetSliders)
+		// GetFAQs -> Ahli FAQ - laryn maglumatlaryny request query - den gelen
+		// limit we page boyunca pagination ulanyp almak ucin ulanylyar
+		api.GET("", controllers.GetFAQs)
 
 		// // DeleteSliderByID -> id boyunca Slider pozmak ucin ulanylyar
 		// api.DELETE(":id", controllers.DeleteSliderByID)
