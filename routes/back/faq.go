@@ -23,7 +23,7 @@ func FAQBackRoutes(back *gin.RouterGroup) {
 		// limit we page boyunca pagination ulanyp almak ucin ulanylyar
 		api.GET("", controllers.GetFAQs)
 
-		// // DeleteSliderByID -> id boyunca Slider pozmak ucin ulanylyar
-		// api.DELETE(":id", controllers.DeleteSliderByID)
+		// DeleteFAQByID -> id boyunca FAQ -ny pozmak ucin ulanylyar
+		api.DELETE(":id", controllers.DeleteFAQByID)
 	}
 }

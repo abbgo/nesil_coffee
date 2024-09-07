@@ -202,3 +202,32 @@ func GetFAQs(c *gin.Context) {
 		"count":  count,
 	})
 }
+
+func DeleteFAQByID(c *gin.Context) {
+	// initialize database connection
+	db, err := config.ConnDB()
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer db.Close()
+
+	// request parametr - den id alynyar
+	ID := c.Param("id")
+	if err := helpers.ValidateRecordByID("faqs", ID, "NULL", db); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	// category - nyn suraty pozulandan son category we onun bilen baglanysykly maglumatlar pozulyar
+	_, err = db.Exec(context.Background(), "DELETE FROM faqs WHERE id = $1", ID)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  true,
+		"message": "data successfully deleted",
+	})
+}
