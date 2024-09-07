@@ -80,6 +80,9 @@ func Routes() *gin.Engine {
 
 		// bu route - ler mail ucin doredilen route - laryn toplumy
 		frontApi.MailFrontRoutes(front)
+
+		// bu route - ler FAQ ucin doredilen route - laryn toplumy
+		frontApi.FAQFrontRoutes(front)
 	}
 
 	return routes
