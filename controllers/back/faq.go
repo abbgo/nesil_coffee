@@ -45,3 +45,47 @@ func CreateFAQ(c *gin.Context) {
 		"message": "data successfully added",
 	})
 }
+
+func UpdateFAQByID(c *gin.Context) {
+	// initialize database connection
+	db, err := config.ConnDB()
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer db.Close()
+
+	// request body - dan gelen maglumatlar alynyar
+	var faq models.FAQ
+	if err := c.BindJSON(&faq); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	if faq.ID == "" {
+		helpers.HandleError(c, 400, "faq id is required")
+		return
+	}
+	if err := helpers.ValidateRecordByID("faqs", faq.ID, "NULL", db); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	// database - daki maglumatlary request body - dan gelen maglumatlar bilen calysyas
+	_, err = db.Exec(context.Background(),
+		`UPDATE faqs SET title_tm=$1 , title_ru=$2 , title_en=$3 , description_tm=$4 , description_ru=$5 , description_en=$6 ,
+		slug_tm=$7 , slug_ru=$8 , slug_en=$9 WHERE id=$10`,
+		faq.TitleTM, faq.TitleRU, faq.TitleEN, faq.DescriptionTM, faq.DescriptionRU, faq.DescriptionEN,
+		slug.MakeLang(faq.TitleTM, "en"), slug.MakeLang(faq.TitleRU, "en"), slug.MakeLang(faq.TitleEN, "en"),
+		faq.ID,
+	)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  true,
+		"message": "data successfully updated",
+	})
+}

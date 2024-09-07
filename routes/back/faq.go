@@ -10,11 +10,11 @@ import (
 func FAQBackRoutes(back *gin.RouterGroup) {
 	api := back.Group("/faqs").Use(middlewares.CheckToken(true))
 	{
-		// CreateSlider -> Slider gosmak ulanylar
+		// CreateFAQ -> FAQ gosmak ulanylar
 		api.POST("", controllers.CreateFAQ)
 
-		// // UpdateSliderByID -> id boyunca Sliderin maglumatlaryny update etmek ucin ulanylyar
-		// api.PUT("", controllers.UpdateSliderByID)
+		// UpdateFAQByID -> id boyunca FAQ - nin maglumatlaryny update etmek ucin ulanylyar
+		api.PUT("", controllers.UpdateFAQByID)
 
 		// // GetSliderByID -> id - si boyunca Sliderin maglumatlaryny almak ucin ulanylyar
 		// api.GET(":id", controllers.GetSliderByID)
