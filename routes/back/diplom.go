@@ -16,8 +16,8 @@ func DiplomBackRoutes(back *gin.RouterGroup) {
 		// UpdateDiplomByID -> id boyunca diplom maglumatlaryny update etmek ucin ulanylyar
 		api.PUT("", controllers.UpdateDiplomByID)
 
-		// // GetGalleryByID -> id - si boyunca gallerinin maglumatlaryny almak ucin ulanylyar
-		// api.GET(":id", controllers.GetGalleryByID)
+		// GetDiplomByID -> id - si boyunca diplomyn maglumatlaryny almak ucin ulanylyar
+		api.GET(":id", controllers.GetDiplomByID)
 
 		// // GetGalleries -> Ahli gallery maglumatlaryny request query - den gelen
 		// // limit we page boyunca pagination ulanyp almak ucin ulanylyar
