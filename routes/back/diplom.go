@@ -10,8 +10,8 @@ import (
 func DiplomBackRoutes(back *gin.RouterGroup) {
 	api := back.Group("/diploms").Use(middlewares.CheckToken(true))
 	{
-		// CreateGallery -> Galareya surat ya-da video gosmak ulanylar
-		api.POST("", controllers.CreateGallery)
+		// CreateDiplom -> Diplom gosmak ulanylar
+		api.POST("", controllers.CreateDiplom)
 
 		// // UpdateGalleryByID -> id boyunca galereya maglumatlaryny update etmek ucin ulanylyar
 		// api.PUT("", controllers.UpdateGalleryByID)

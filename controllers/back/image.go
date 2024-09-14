@@ -45,6 +45,8 @@ func AddOrUpdateImage(c *gin.Context) {
 		path = "recipe"
 	case "slider":
 		path = "slider"
+	case "diplom":
+		path = "diplom"
 	default:
 		helpers.HandleError(c, 400, "invalid image")
 		return
