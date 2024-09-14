@@ -113,3 +113,62 @@ func GetDiplomByID(c *gin.Context) {
 		"diplom": diplom,
 	})
 }
+
+func GetDiploms(c *gin.Context) {
+	var requestQuery helpers.StandartQuery
+	var count uint
+	var diploms []models.Diplom
+
+	// initialize database connection
+	db, err := config.ConnDB()
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer db.Close()
+
+	// request query - den maglumatlar bind edilyar
+	if err := c.Bind(&requestQuery); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	// request query - den maglumatlar validate edilyar
+	if err := helpers.ValidateStructData(&requestQuery); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	// limit we page boyunca offset hasaplanyar
+	offset := requestQuery.Limit * (requestQuery.Page - 1)
+
+	// database - den maglumatlaryn sany alynyar
+	if err = db.QueryRow(context.Background(), `SELECT COUNT(id) FROM diploms`).Scan(&count); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	// database maglumatlar alynyar
+	rowsDiplom, err := db.Query(context.Background(),
+		`SELECT id,image FROM diploms ORDER BY created_at DESC LIMIT $1 OFFSET $2`,
+		requestQuery.Limit, offset)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer rowsDiplom.Close()
+
+	for rowsDiplom.Next() {
+		var diplom models.Diplom
+		if err := rowsDiplom.Scan(&diplom.ID, &diplom.Image); err != nil {
+			helpers.HandleError(c, 400, err.Error())
+			return
+		}
+		diploms = append(diploms, diplom)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  true,
+		"diploms": diploms,
+		"count":   count,
+	})
+}

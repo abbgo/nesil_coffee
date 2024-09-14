@@ -19,9 +19,9 @@ func DiplomBackRoutes(back *gin.RouterGroup) {
 		// GetDiplomByID -> id - si boyunca diplomyn maglumatlaryny almak ucin ulanylyar
 		api.GET(":id", controllers.GetDiplomByID)
 
-		// // GetGalleries -> Ahli gallery maglumatlaryny request query - den gelen
-		// // limit we page boyunca pagination ulanyp almak ucin ulanylyar
-		// api.GET("", controllers.GetGalleries)
+		// GetDiploms -> Ahli diplomlaryn maglumatlaryny request query - den gelen
+		// limit we page boyunca pagination ulanyp almak ucin ulanylyar
+		api.GET("", controllers.GetDiploms)
 
 		// // DeleteGalleryByID -> id boyunca Product pozmak ucin ulanylyar
 		// api.DELETE(":id", controllers.DeleteGalleryByID)
