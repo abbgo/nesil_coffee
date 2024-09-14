@@ -13,8 +13,8 @@ func DiplomBackRoutes(back *gin.RouterGroup) {
 		// CreateDiplom -> Diplom gosmak ulanylar
 		api.POST("", controllers.CreateDiplom)
 
-		// // UpdateGalleryByID -> id boyunca galereya maglumatlaryny update etmek ucin ulanylyar
-		// api.PUT("", controllers.UpdateGalleryByID)
+		// UpdateDiplomByID -> id boyunca diplom maglumatlaryny update etmek ucin ulanylyar
+		api.PUT("", controllers.UpdateDiplomByID)
 
 		// // GetGalleryByID -> id - si boyunca gallerinin maglumatlaryny almak ucin ulanylyar
 		// api.GET(":id", controllers.GetGalleryByID)

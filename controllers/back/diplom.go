@@ -46,3 +46,37 @@ func CreateDiplom(c *gin.Context) {
 		"message": "data successfully added",
 	})
 }
+
+func UpdateDiplomByID(c *gin.Context) {
+	// initialize database connection
+	db, err := config.ConnDB()
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer db.Close()
+
+	// request body - dan gelen maglumatlar alynyar
+	var diplom models.Diplom
+	if err := c.BindJSON(&diplom); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	_, err = db.Exec(context.Background(), "UPDATE diploms SET image = $1 WHERE id = $2",
+		diplom.Image, diplom.ID)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	if err := DeleteImageFromDB(diplom.Image); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  true,
+		"message": "data successfully updated",
+	})
+}
