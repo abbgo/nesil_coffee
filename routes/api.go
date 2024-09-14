@@ -50,6 +50,9 @@ func Routes() *gin.Engine {
 
 		// bu route - ler back faq ucin doredilen rout - laryn toplumy
 		backApi.FAQBackRoutes(back)
+
+		// bu route - ler back diplom ucin doredilen rout - laryn toplumy
+		backApi.DiplomBackRoutes(back)
 	}
 
 	admin := routes.Group("/api")
