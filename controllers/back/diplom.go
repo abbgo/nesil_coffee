@@ -6,6 +6,7 @@ import (
 	"nesil_coffe/helpers"
 	"nesil_coffe/models"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -170,5 +171,42 @@ func GetDiploms(c *gin.Context) {
 		"status":  true,
 		"diploms": diploms,
 		"count":   count,
+	})
+}
+
+func DeleteDiplomByID(c *gin.Context) {
+	// initialize database connection
+	db, err := config.ConnDB()
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer db.Close()
+
+	// request parametr - den id alynyar
+	ID := c.Param("id")
+	var diplom models.Diplom
+	db.QueryRow(context.Background(), "SELECT id,image FROM diploms WHERE id=$1", ID).Scan(&diplom.ID, &diplom.Image)
+	if diplom.ID == "" {
+		helpers.HandleError(c, 404, "record not found")
+		return
+	}
+
+	// local path - dan surat pozulyar
+	if err := os.Remove(helpers.ServerPath + diplom.Image); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	// category - nyn suraty pozulandan son category we onun bilen baglanysykly maglumatlar pozulyar
+	_, err = db.Exec(context.Background(), "DELETE FROM diploms WHERE id = $1", ID)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  true,
+		"message": "data successfully deleted",
 	})
 }

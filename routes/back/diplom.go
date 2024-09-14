@@ -23,7 +23,7 @@ func DiplomBackRoutes(back *gin.RouterGroup) {
 		// limit we page boyunca pagination ulanyp almak ucin ulanylyar
 		api.GET("", controllers.GetDiploms)
 
-		// // DeleteGalleryByID -> id boyunca Product pozmak ucin ulanylyar
-		// api.DELETE(":id", controllers.DeleteGalleryByID)
+		// DeleteDiplomByID -> id boyunca diplom pozmak ucin ulanylyar
+		api.DELETE(":id", controllers.DeleteDiplomByID)
 	}
 }
