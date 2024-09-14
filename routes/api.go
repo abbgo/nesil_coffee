@@ -86,6 +86,9 @@ func Routes() *gin.Engine {
 
 		// bu route - ler FAQ ucin doredilen route - laryn toplumy
 		frontApi.FAQFrontRoutes(front)
+
+		// bu route - ler diplom ucin doredilen route - laryn toplumy
+		frontApi.DiplomFrontRoutes(front)
 	}
 
 	return routes
