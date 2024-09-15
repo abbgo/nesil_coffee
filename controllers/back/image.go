@@ -4,6 +4,7 @@ import (
 	"context"
 	"nesil_coffe/config"
 	"nesil_coffe/helpers"
+	"nesil_coffe/models"
 	"net/http"
 	"os"
 
@@ -92,13 +93,14 @@ func AddOrUpdateBlurHashImage(c *gin.Context) {
 		}
 	}
 
-	image, blurHashOfImage, err := helpers.BlurHashFileUpload("image", "slider", c)
+	var blurImage models.BlurImage
+	blurImage.URL, blurImage.HashBlur, err = helpers.BlurHashFileUpload("image", "slider", c)
 	if err != nil {
 		helpers.HandleError(c, 400, err.Error())
 		return
 	}
 
-	_, err = db.Exec(context.Background(), "INSERT INTO helper_images (image) VALUES ($1)", image)
+	_, err = db.Exec(context.Background(), "INSERT INTO helper_images (image) VALUES ($1)", blurImage.URL)
 	if err != nil {
 		helpers.HandleError(c, 400, err.Error())
 		return
@@ -106,7 +108,7 @@ func AddOrUpdateBlurHashImage(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": true,
-		"image":  image,
+		"image":  blurImage,
 	})
 }
 
