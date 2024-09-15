@@ -92,6 +92,9 @@ func Routes() *gin.Engine {
 
 		// bu route - ler diplom ucin doredilen route - laryn toplumy
 		frontApi.DiplomFrontRoutes(front)
+
+		// bu route - ler text slider ucin doredilen route - laryn toplumy
+		frontApi.TextSliderFrontRoutes(front)
 	}
 
 	return routes
