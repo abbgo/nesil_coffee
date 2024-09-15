@@ -82,3 +82,26 @@ func UpdateTextSliderByID(c *gin.Context) {
 		"message": "data successfully updated",
 	})
 }
+
+func GetOneTextSlider(c *gin.Context) {
+	// initialize database connection
+	db, err := config.ConnDB()
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer db.Close()
+
+	var textSlider models.TextSlider
+	db.QueryRow(context.Background(), `SELECT id,description_tm,description_ru,description_en FROM text_slider LIMIT 1`).
+		Scan(&textSlider.ID, &textSlider.DescriptionTM, &textSlider.DescriptionRU, &textSlider.DescriptionEN)
+	if textSlider.ID == "" {
+		helpers.HandleError(c, 404, "record not found")
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":      true,
+		"text_slider": textSlider,
+	})
+}
