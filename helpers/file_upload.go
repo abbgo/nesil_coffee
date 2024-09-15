@@ -115,11 +115,6 @@ func GenerateBlurHashImage(file *multipart.FileHeader) (string, error) {
 		}
 	}
 
-	// Geçici dosyayı sil
-	if err := os.Remove(tempFileName); err != nil {
-		return "", err
-	}
-
 	// BlurHash'i oluştur
 	hash, err := blurhash.Encode(4, 3, rgbaImg)
 	if err != nil {
