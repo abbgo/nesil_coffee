@@ -70,6 +70,46 @@ func AddOrUpdateImage(c *gin.Context) {
 	})
 }
 
+func AddOrUpdateBlurHashImage(c *gin.Context) {
+	db, err := config.ConnDB()
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer db.Close()
+
+	oldImage := c.PostForm("old_path")
+	if oldImage != "" {
+		if err := os.Remove(helpers.ServerPath + oldImage); err != nil {
+			helpers.HandleError(c, 400, err.Error())
+			return
+		}
+
+		_, err := db.Exec(context.Background(), "DELETE FROM helper_images WHERE image = $1", oldImage)
+		if err != nil {
+			helpers.HandleError(c, 400, err.Error())
+			return
+		}
+	}
+
+	image, blurHashOfImage, err := helpers.BlurHashFileUpload("image", "slider", c)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	_, err = db.Exec(context.Background(), "INSERT INTO helper_images (image) VALUES ($1)", image)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": true,
+		"image":  image,
+	})
+}
+
 type DeleteImg struct {
 	Image string `json:"image" binding:"required"`
 }
