@@ -19,11 +19,7 @@ func TextSliderBackRoutes(back *gin.RouterGroup) {
 		// GetOneTextSlider -> 1 sany Text Slider - in maglumatlaryny almak ucin ulanylyar
 		api.GET("one", controllers.GetOneTextSlider)
 
-		// // GetProducts -> Ahli Product - laryn maglumatlaryny request query - den gelen
-		// // limit we page boyunca pagination ulanyp almak ucin ulanylyar
-		// api.GET("", controllers.GetProducts)
-
-		// // DeleteProductByID -> id boyunca Product pozmak ucin ulanylyar
-		// api.DELETE(":id", controllers.DeleteProductByID)
+		// DeleteTextSlider -> Text SLider pozmak ucin ulanylyar
+		api.DELETE(":id", controllers.DeleteTextSlider)
 	}
 }

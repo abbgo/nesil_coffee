@@ -105,3 +105,32 @@ func GetOneTextSlider(c *gin.Context) {
 		"text_slider": textSlider,
 	})
 }
+
+func DeleteTextSlider(c *gin.Context) {
+	// initialize database connection
+	db, err := config.ConnDB()
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer db.Close()
+
+	ID := c.Param("id")
+	var id string
+	db.QueryRow(context.Background(), `SELECT id FROM text_slider WHERE id=$1`, ID).Scan(&id)
+	if id == "" {
+		helpers.HandleError(c, 404, "record not found")
+		return
+	}
+
+	_, err = db.Exec(context.Background(), `DELETE FROM text_slider WHERE id=$1`, ID)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  true,
+		"message": "data successfully deleted",
+	})
+}
