@@ -81,9 +81,9 @@ func UpdateSliderByID(c *gin.Context) {
 	// database - daki maglumatlary request body - dan gelen maglumatlar bilen calysyas
 	_, err = db.Exec(context.Background(),
 		`UPDATE sliders SET title_tm=$1 , title_ru=$2 , title_en=$3 , description_tm=$4 , description_ru=$5 , description_en=$6 ,
-		image=$7 , sub_title_tm=$8 , sub_title_ru=$9 , sub_title_en=$10 WHERE id=$11`,
+		image_url=$7 , sub_title_tm=$8 , sub_title_ru=$9 , sub_title_en=$10 , image_hash=$11 WHERE id=$12`,
 		slider.TitleTM, slider.TitleRU, slider.TitleEN, slider.DescriptionTM, slider.DescriptionRU, slider.DescriptionEN,
-		slider.Image, slider.SubTitleTM, slider.SubTitleRU, slider.SubTitleEN,
+		slider.Image.URL, slider.SubTitleTM, slider.SubTitleRU, slider.SubTitleEN, slider.Image.HashBlur,
 		slider.ID,
 	)
 	if err != nil {
@@ -91,7 +91,7 @@ func UpdateSliderByID(c *gin.Context) {
 		return
 	}
 
-	if err := DeleteImageFromDB(slider.Image); err != nil {
+	if err := DeleteImageFromDB(slider.Image.URL); err != nil {
 		helpers.HandleError(c, 400, err.Error())
 		return
 	}
