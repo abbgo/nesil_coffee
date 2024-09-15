@@ -10,8 +10,8 @@ import (
 func AboutBackRoutes(back *gin.RouterGroup) {
 	api := back.Group("/about-us").Use(middlewares.CheckToken(true))
 	{
-		// CreateTextSlider -> Text Slider gosmak ulanylar
-		api.POST("", controllers.CreateTextSlider)
+		// CreateAboutUs ->About Us text gosmak ulanylar
+		api.POST("", controllers.CreateAboutUs)
 
 		// UpdateTextSliderByID -> id boyunca Text Slider - in maglumatlaryny update etmek ucin ulanylyar
 		api.PUT("", controllers.UpdateTextSliderByID)
