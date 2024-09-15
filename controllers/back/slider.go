@@ -212,14 +212,14 @@ func DeleteSliderByID(c *gin.Context) {
 	// request parametr - den id alynyar
 	ID := c.Param("id")
 	var slider models.Slider
-	db.QueryRow(context.Background(), "SELECT id,image FROM sliders WHERE id=$1", ID).Scan(&slider.ID, &slider.Image)
+	db.QueryRow(context.Background(), "SELECT id,image_url FROM sliders WHERE id=$1", ID).Scan(&slider.ID, &slider.Image)
 	if slider.ID == "" {
 		helpers.HandleError(c, 404, "record not found")
 		return
 	}
 
 	// local path - dan surat pozulyar
-	if err := os.Remove(helpers.ServerPath + slider.Image); err != nil {
+	if err := os.Remove(helpers.ServerPath + slider.Image.URL); err != nil {
 		helpers.HandleError(c, 400, err.Error())
 		return
 	}
