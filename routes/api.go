@@ -104,6 +104,9 @@ func Routes() *gin.Engine {
 
 		// bu route - ler about us sahypa text ucin doredilen route - laryn toplumy
 		frontApi.AboutFrontRoutes(front)
+
+		// bu route - ler about us sahypa text ucin doredilen route - laryn toplumy
+		frontApi.RewardTextFrontRoutes(front)
 	}
 
 	return routes

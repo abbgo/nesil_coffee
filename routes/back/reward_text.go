@@ -10,16 +10,16 @@ import (
 func RewardTextBackRoutes(back *gin.RouterGroup) {
 	api := back.Group("/reward-text").Use(middlewares.CheckToken(true))
 	{
-		// CreateTextSlider -> Text Slider gosmak ulanylar
-		api.POST("", controllers.CreateTextSlider)
+		// CreateRewrdText -> Reward Text gosmak ulanylar
+		api.POST("", controllers.CreateRewardText)
 
-		// UpdateTextSliderByID -> id boyunca Text Slider - in maglumatlaryny update etmek ucin ulanylyar
-		api.PUT("", controllers.UpdateTextSliderByID)
+		// UpdateRewrdTextByID -> id boyunca Reward Text - in maglumatlaryny update etmek ucin ulanylyar
+		api.PUT("", controllers.UpdateRewardTextByID)
 
-		// GetOneTextSlider -> 1 sany Text Slider - in maglumatlaryny almak ucin ulanylyar
-		api.GET("one", controllers.GetOneTextSlider)
+		// GetOneRewrdText -> 1 sany Reward Text - in maglumatlaryny almak ucin ulanylyar
+		api.GET("one", controllers.GetOneRewardText)
 
-		// DeleteTextSlider -> Text SLider pozmak ucin ulanylyar
-		api.DELETE(":id", controllers.DeleteTextSlider)
+		// DeleteRewrdText -> Reward Text pozmak ucin ulanylyar
+		api.DELETE(":id", controllers.DeleteRewardText)
 	}
 }
