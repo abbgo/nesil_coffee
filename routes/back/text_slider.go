@@ -10,11 +10,11 @@ import (
 func TextSliderBackRoutes(back *gin.RouterGroup) {
 	api := back.Group("/text-slider").Use(middlewares.CheckToken(true))
 	{
-		// CreateProduct -> Product gosmak ulanylar
+		// CreateTextSlider -> Text Slider gosmak ulanylar
 		api.POST("", controllers.CreateTextSlider)
 
-		// // UpdateProductByID -> id boyunca Product - in maglumatlaryny update etmek ucin ulanylyar
-		// api.PUT("", controllers.UpdateProductByID)
+		// UpdateTextSliderByID -> id boyunca Text Slider - in maglumatlaryny update etmek ucin ulanylyar
+		api.PUT("", controllers.UpdateTextSliderByID)
 
 		// // GetBrendBGetProductByIDyID -> id - si boyunca Product - in maglumatlaryny almak ucin ulanylyar
 		// api.GET(":id", controllers.GetProductByID)

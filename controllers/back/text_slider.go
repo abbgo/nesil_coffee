@@ -40,3 +40,45 @@ func CreateTextSlider(c *gin.Context) {
 		"message": "data successfully added",
 	})
 }
+
+func UpdateTextSliderByID(c *gin.Context) {
+	// initialize database connection
+	db, err := config.ConnDB()
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+	defer db.Close()
+
+	// request body - dan gelen maglumatlar alynyar
+	var textSlider models.TextSlider
+	if err := c.BindJSON(&textSlider); err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	if textSlider.ID == "" {
+		helpers.HandleError(c, 400, "id is required")
+		return
+	}
+	var id string
+	db.QueryRow(context.Background(), `SELECT id FROM text_slider WHERE id=$1`, textSlider.ID).Scan(&id)
+	if id == "" {
+		helpers.HandleError(c, 404, "record not found")
+		return
+	}
+
+	_, err = db.Exec(
+		context.Background(), `UPDATE text_slider SET description_tm=$1 , description_ru=$2 , description_en=$3 WHERE id=$4`,
+		textSlider.DescriptionTM, textSlider.DescriptionRU, textSlider.DescriptionEN, textSlider.ID,
+	)
+	if err != nil {
+		helpers.HandleError(c, 400, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  true,
+		"message": "data successfully updated",
+	})
+}
