@@ -13,13 +13,13 @@ func AboutBackRoutes(back *gin.RouterGroup) {
 		// CreateAboutUs ->About Us text gosmak ulanylar
 		api.POST("", controllers.CreateAboutUs)
 
-		// UpdateTextSliderByID -> id boyunca Text Slider - in maglumatlaryny update etmek ucin ulanylyar
-		api.PUT("", controllers.UpdateTextSliderByID)
+		// UpdateAboutUsByID -> id boyunca About us text - in maglumatlaryny update etmek ucin ulanylyar
+		api.PUT("", controllers.UpdateAboutUsByID)
 
-		// GetOneTextSlider -> 1 sany Text Slider - in maglumatlaryny almak ucin ulanylyar
-		api.GET("one", controllers.GetOneTextSlider)
+		// GetOneAboutUs -> 1 sany About Us text - in maglumatlaryny almak ucin ulanylyar
+		api.GET("one", controllers.GetOneAboutUs)
 
-		// DeleteTextSlider -> Text SLider pozmak ucin ulanylyar
-		api.DELETE(":id", controllers.DeleteTextSlider)
+		// DeleteAboutUs -> About Us text pozmak ucin ulanylyar
+		api.DELETE(":id", controllers.DeleteAboutUs)
 	}
 }
