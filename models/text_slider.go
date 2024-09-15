@@ -2,7 +2,7 @@ package models
 
 type TextSlider struct {
 	ID            string `json:"id"`
-	DescriptionTM string `json:"descriptions_tm" binding:"required"`
-	DescriptionRU string `json:"descriptions_ru" binding:"required"`
-	DescriptionEN string `json:"descriptions_en" binding:"required"`
+	DescriptionTM string `json:"description_tm" binding:"required"`
+	DescriptionRU string `json:"description_ru" binding:"required"`
+	DescriptionEN string `json:"description_en" binding:"required"`
 }

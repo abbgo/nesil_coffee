@@ -11,7 +11,7 @@ func TextSliderBackRoutes(back *gin.RouterGroup) {
 	api := back.Group("/text-slider").Use(middlewares.CheckToken(true))
 	{
 		// CreateProduct -> Product gosmak ulanylar
-		api.POST("", controllers.CreateProduct)
+		api.POST("", controllers.CreateTextSlider)
 
 		// // UpdateProductByID -> id boyunca Product - in maglumatlaryny update etmek ucin ulanylyar
 		// api.PUT("", controllers.UpdateProductByID)
