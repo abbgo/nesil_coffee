@@ -137,10 +137,10 @@ func GetSliderByID(c *gin.Context) {
 	// database - den request parametr - den gelen id boyunca maglumat cekilyar
 	var slider models.Slider
 	if err := db.QueryRow(context.Background(),
-		`SELECT id,title_tm,title_ru,title_en,sub_title_tm,sub_title_ru,sub_title_en,image_url,image_hash FROM sliders WHERE id = $1`, sliderID).
+		`SELECT id,title_tm,title_ru,title_en,sub_title_tm,sub_title_ru,sub_title_en,image_url,image_hash,media_type FROM sliders WHERE id = $1`, sliderID).
 		Scan(&slider.ID, &slider.TitleTM, &slider.TitleRU, &slider.TitleEN,
 			&slider.SubTitleTM, &slider.SubTitleRU, &slider.SubTitleEN,
-			&slider.Image.URL, &slider.Image.HashBlur,
+			&slider.Image.URL, &slider.Image.HashBlur, &slider.MediaType,
 		); err != nil {
 		helpers.HandleError(c, 400, err.Error())
 		return
