@@ -47,7 +47,7 @@ func GetSliders(c *gin.Context) {
 
 	rowsRecipe, err := db.Query(context.Background(),
 		`SELECT id,title_tm,title_ru,title_en,sub_title_tm,sub_title_ru,sub_title_en,
-		image_url,image_hash FROM sliders ORDER BY created_at DESC LIMIT $1 OFFSET $2`, requestQuery.Limit, offset)
+		image_url,image_hash,media_type FROM sliders ORDER BY created_at DESC LIMIT $1 OFFSET $2`, requestQuery.Limit, offset)
 	if err != nil {
 		helpers.HandleError(c, 400, err.Error())
 		return
@@ -57,7 +57,9 @@ func GetSliders(c *gin.Context) {
 	for rowsRecipe.Next() {
 		var slider models.Slider
 		if err := rowsRecipe.Scan(&slider.ID, &slider.TitleTM, &slider.TitleRU, &slider.TitleEN,
-			&slider.SubTitleTM, &slider.SubTitleRU, &slider.SubTitleEN, &slider.Image.URL, &slider.Image.HashBlur); err != nil {
+			&slider.SubTitleTM, &slider.SubTitleRU, &slider.SubTitleEN, &slider.Image.URL,
+			&slider.Image.HashBlur, &slider.MediaType,
+		); err != nil {
 			helpers.HandleError(c, 400, err.Error())
 			return
 		}
