@@ -88,12 +88,23 @@ func UpdateSliderByID(c *gin.Context) {
 		return
 	}
 
+	hasMediaType := false
+	for _, mediaType := range helpers.MediaTypes {
+		if slider.MediaType == mediaType {
+			hasMediaType = true
+		}
+	}
+	if !hasMediaType {
+		helpers.HandleError(c, 400, "invalid media type")
+		return
+	}
+
 	// database - daki maglumatlary request body - dan gelen maglumatlar bilen calysyas
 	_, err = db.Exec(context.Background(),
 		`UPDATE sliders SET title_tm=$1 , title_ru=$2 , title_en=$3 , image_url=$4 , sub_title_tm=$5 , sub_title_ru=$6 , 
-		sub_title_en=$7 , image_hash=$8 WHERE id=$9`,
+		sub_title_en=$7 , image_hash=$8 , media_type=$9 WHERE id=$10`,
 		slider.TitleTM, slider.TitleRU, slider.TitleEN, slider.Image.URL, slider.SubTitleTM, slider.SubTitleRU, slider.SubTitleEN,
-		slider.Image.HashBlur, slider.ID,
+		slider.Image.HashBlur, slider.MediaType, slider.ID,
 	)
 	if err != nil {
 		helpers.HandleError(c, 400, err.Error())
