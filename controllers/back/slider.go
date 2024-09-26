@@ -27,13 +27,24 @@ func CreateSlider(c *gin.Context) {
 		return
 	}
 
+	hasMediaType := false
+	for _, mediaType := range helpers.MediaTypes {
+		if slider.MediaType == mediaType {
+			hasMediaType = true
+		}
+	}
+	if !hasMediaType {
+		helpers.HandleError(c, 400, "invalid media type")
+		return
+	}
+
 	// eger maglumatlar dogry bolsa db maglumatlar gosulyar
 	_, err = db.Exec(context.Background(),
 		`INSERT INTO sliders 
-		(image_url,title_tm,title_ru,title_en,sub_title_tm,sub_title_ru,sub_title_en,image_hash) 
-			VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
+		(image_url,title_tm,title_ru,title_en,sub_title_tm,sub_title_ru,sub_title_en,image_hash,media_type) 
+			VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
 		slider.Image.URL, slider.TitleTM, slider.TitleRU, slider.TitleEN,
-		slider.SubTitleTM, slider.SubTitleRU, slider.SubTitleEN, slider.Image.HashBlur,
+		slider.SubTitleTM, slider.SubTitleRU, slider.SubTitleEN, slider.Image.HashBlur, slider.MediaType,
 	)
 	if err != nil {
 		helpers.HandleError(c, 400, err.Error())
