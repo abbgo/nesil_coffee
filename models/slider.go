@@ -9,4 +9,5 @@ type Slider struct {
 	SubTitleTM string    `json:"sub_title_tm,omitempty"`
 	SubTitleRU string    `json:"sub_title_ru,omitempty"`
 	SubTitleEN string    `json:"sub_title_en,omitempty"`
+	MediaType  string    `json:"media_type"`
 }
