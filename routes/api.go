@@ -16,7 +16,7 @@ func Routes() *gin.Engine {
 	routes.Use(gzip.Gzip(gzip.DefaultCompression))
 
 	routes.Use(cors.New(cors.Config{
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "RefreshToken", "Authorization"},
 		AllowCredentials: true,
 		AllowAllOrigins:  true,
